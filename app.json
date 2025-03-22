@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Easy_Track",
+    "name": "Easy Track",
     "slug": "Easy_Track",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -14,7 +14,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#0D0D0D"
       }
     },
     "web": {

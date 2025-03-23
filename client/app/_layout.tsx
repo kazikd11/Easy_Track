@@ -3,13 +3,28 @@ import "@/global.css"
 import {useEffect} from "react";
 import {StatusBar} from "react-native";
 import {SafeAreaView} from "react-native-safe-area-context";
+import COLORS from "@/utils/colors";
+import * as NavigationBar from 'expo-navigation-bar';
+
 
 export default function RootLayout() {
 
     useEffect(() => {
         StatusBar.setBarStyle('light-content');
-        StatusBar.setBackgroundColor('#0D0D0D');
+        StatusBar.setBackgroundColor(COLORS.primary);
         StatusBar.setTranslucent(true);
+
+        const setNavBar = async () => {
+            try {
+                await NavigationBar.setBackgroundColorAsync(COLORS.black);
+                // await NavigationBar.setBackgroundColorAsync(COLORS.tertiary);
+
+            } catch (error) {
+                console.error(error);
+            }
+        }
+        setNavBar().then();
+
     }, []);
     return (
         <SafeAreaView className="flex-1">

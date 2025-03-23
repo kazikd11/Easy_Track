@@ -1,18 +1,20 @@
 import {Tabs} from 'expo-router';
+import COLORS from '@/utils/colors';
+import TabIcon from "@/components/TabIcon";
 
 export default function Layout() {
     return (
         <Tabs
         screenOptions={
             {
+
                 tabBarStyle: {
-                    backgroundColor: '#0D0D0D',
-                    borderTopColor: '#0D0D0D',
-                    borderTopWidth: 1,
+                    backgroundColor: COLORS.black,
+                    borderTopWidth: 0,
+                    height: 50,
                 },
-                tabBarActiveTintColor: '#FF6B6B',
-                tabBarInactiveTintColor: '#FFFFFF',
                 tabBarShowLabel: false,
+                tabBarLabelPosition: 'beside-icon',
             }
         }
         >
@@ -20,11 +22,26 @@ export default function Layout() {
                 name="index"
                 options={{
                     headerShown: false,
+                    tabBarIcon: ({focused}) => (
+                        <TabIcon focused={focused} name="analytics"/>
+                    ),
+
+                }}/>
+            <Tabs.Screen
+                name="add"
+                options={{
+                    headerShown: false,
+                    tabBarIcon: ({focused}) => (
+                        <TabIcon focused={focused} name="add"/>
+                    ),
                 }}/>
             <Tabs.Screen
                 name="user"
                 options={{
                     headerShown: false,
+                    tabBarIcon: ({focused}) => (
+                        <TabIcon focused={focused} name="person-circle-outline"/>
+                    ),
                 }}/>
         </Tabs>
     );

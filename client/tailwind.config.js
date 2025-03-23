@@ -1,15 +1,20 @@
-/** @type {import('tailwindcss').Config} */
+/** @type {{primary: string, secondary: string, tertiary: string, quaternary: string, quinary: string}|{readonly default?: {primary: string, secondary: string, tertiary: string, quaternary: string, quinary: string}}} */
+
+const COLORS = require("./utils/colors");
+
 module.exports = {
   content: ["./app/**/*.{js,jsx,ts,tsx}"],
   presets: [require("nativewind/preset")],
   theme: {
     extend: {
       colors:{
-        primary: '#0D0D0D',
-        secondary: '#260101',
-        tertiary: '#400101',
-        quaternary: '#73020C',
-        quinary: '#A60311',
+        primary: COLORS.primary,
+        secondary: COLORS.secondary,
+        tertiary: COLORS.tertiary,
+        quaternary: COLORS.quaternary,
+        quinary: COLORS.quinary,
+        whitea: COLORS.white,
+        blacka: COLORS.black,
       }
     },
   },

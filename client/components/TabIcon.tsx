@@ -6,7 +6,7 @@ export default function TabIcon({ focused, name }: { focused?: boolean, name: ke
         <Ionicons
             name={name}
             size={24}
-            color={focused ? COLORS.quaternary : COLORS.white}
+            color={focused ? COLORS.quaternary : COLORS.cwhite}
         />
     );
 }

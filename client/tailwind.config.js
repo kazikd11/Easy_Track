@@ -3,7 +3,7 @@
 const COLORS = require("./utils/colors");
 
 module.exports = {
-  content: ["./app/**/*.{js,jsx,ts,tsx}"],
+  content: ["./app/**/*.{js,jsx,ts,tsx}","./components/**/*.{js,jsx,ts,tsx}"],
   presets: [require("nativewind/preset")],
   theme: {
     extend: {
@@ -13,8 +13,11 @@ module.exports = {
         tertiary: COLORS.tertiary,
         quaternary: COLORS.quaternary,
         quinary: COLORS.quinary,
-        whitea: COLORS.white,
-        blacka: COLORS.black,
+        cwhite: COLORS.cwhite,
+        cblack: COLORS.cblack,
+      },
+      textColor:{
+        DEFAULT: COLORS.cwhite
       }
     },
   },

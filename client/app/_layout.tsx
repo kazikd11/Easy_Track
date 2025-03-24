@@ -1,7 +1,7 @@
 import {Stack} from "expo-router";
 import "@/global.css"
 import {useEffect} from "react";
-import {StatusBar} from "react-native";
+import {StatusBar, Text} from "react-native";
 import {SafeAreaView} from "react-native-safe-area-context";
 import COLORS from "@/utils/colors";
 import * as NavigationBar from 'expo-navigation-bar';
@@ -16,7 +16,7 @@ export default function RootLayout() {
 
         const setNavBar = async () => {
             try {
-                await NavigationBar.setBackgroundColorAsync(COLORS.black);
+                await NavigationBar.setBackgroundColorAsync(COLORS.cblack);
                 // await NavigationBar.setBackgroundColorAsync(COLORS.tertiary);
 
             } catch (error) {

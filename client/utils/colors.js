@@ -4,8 +4,8 @@ const COLORS = {
     tertiary: '#400101',
     quaternary: '#73020C',
     quinary: '#A60311',
-    white: '#FFFFFF',
-    black: '#000000',
+    cwhite: '#FFFFFF',
+    cblack: '#000000',
 };
 
 module.exports = COLORS;

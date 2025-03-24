@@ -3,7 +3,7 @@ import AddEntry from "@/components/AddEntry";
 
 export default function Add() {
     return (
-        <View className="bg-primary flex-1 justify-center items-center text-whitea">
+        <View className="bg-primary flex-1 justify-center items-center">
             <AddEntry/>
         </View>
     )

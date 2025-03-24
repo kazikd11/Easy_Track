@@ -9,7 +9,7 @@ export default function Layout() {
             {
 
                 tabBarStyle: {
-                    backgroundColor: COLORS.black,
+                    backgroundColor: COLORS.cblack,
                     borderTopWidth: 0,
                     height: 50,
                 },

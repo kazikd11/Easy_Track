@@ -1,10 +1,11 @@
 import {Stack} from "expo-router";
 import "@/global.css"
 import {useEffect} from "react";
-import {StatusBar, Text} from "react-native";
+import {Platform, StatusBar, Text} from "react-native";
 import {SafeAreaView} from "react-native-safe-area-context";
 import COLORS from "@/utils/colors";
 import * as NavigationBar from 'expo-navigation-bar';
+import {Updates} from "@expo/config-plugins/build/android";
 
 
 export default function RootLayout() {
@@ -13,6 +14,7 @@ export default function RootLayout() {
         StatusBar.setBarStyle('light-content');
         StatusBar.setBackgroundColor(COLORS.primary);
         StatusBar.setTranslucent(true);
+
 
         const setNavBar = async () => {
             try {

@@ -19,20 +19,19 @@ export default function Layout() {
         }
         >
             <Tabs.Screen
+                name="stats"
+                options={{
+                    headerShown: false,
+                    tabBarIcon: ({focused}) => (
+                        <TabIcon focused={focused} name="add"/>
+                    ),
+                }}/>
+            <Tabs.Screen
                 name="index"
                 options={{
                     headerShown: false,
                     tabBarIcon: ({focused}) => (
                         <TabIcon focused={focused} name="analytics"/>
-                    ),
-
-                }}/>
-            <Tabs.Screen
-                name="add"
-                options={{
-                    headerShown: false,
-                    tabBarIcon: ({focused}) => (
-                        <TabIcon focused={focused} name="add"/>
                     ),
                 }}/>
             <Tabs.Screen

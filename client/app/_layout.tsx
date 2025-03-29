@@ -6,6 +6,7 @@ import {SafeAreaView} from "react-native-safe-area-context";
 import COLORS from "@/utils/colors";
 import * as NavigationBar from 'expo-navigation-bar';
 import {Updates} from "@expo/config-plugins/build/android";
+import {EntriesProvider} from "@/context/EntriesContext";
 
 
 export default function RootLayout() {
@@ -29,13 +30,13 @@ export default function RootLayout() {
 
     }, []);
     return (
-        <SafeAreaView className="flex-1">
+        <EntriesProvider >
             <Stack>
                 <Stack.Screen name="(tabs)" options={{
                     headerShown: false,
                 }}/>
             </Stack>
-        </SafeAreaView>
+        </EntriesProvider>
 
     )
 }

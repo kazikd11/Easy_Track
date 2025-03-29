@@ -1,8 +1,13 @@
 import {Tabs} from 'expo-router';
 import COLORS from '@/utils/colors';
 import TabIcon from "@/components/TabIcon";
+import {useState} from "react";
+import Entry from "@/types/entry";
 
 export default function Layout() {
+
+    const [entries, setEntries] = useState<Entry[]>([]);
+
     return (
         <Tabs
         screenOptions={

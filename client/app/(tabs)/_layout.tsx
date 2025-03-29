@@ -23,7 +23,7 @@ export default function Layout() {
                 options={{
                     headerShown: false,
                     tabBarIcon: ({focused}) => (
-                        <TabIcon focused={focused} name="add"/>
+                        <TabIcon focused={focused} name="analytics"/>
                     ),
                 }}/>
             <Tabs.Screen
@@ -31,7 +31,7 @@ export default function Layout() {
                 options={{
                     headerShown: false,
                     tabBarIcon: ({focused}) => (
-                        <TabIcon focused={focused} name="analytics"/>
+                        <TabIcon focused={focused} name="add"/>
                     ),
                 }}/>
             <Tabs.Screen

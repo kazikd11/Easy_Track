@@ -18,13 +18,17 @@ export default function AddEntry({saveEntry}: { saveEntry: (entry: Entry) => Pro
         }
     }
 
-    const handleConfirm = () => {
+    const handleConfirm = async () => {
         const entry: Entry = {
             date: date.toISOString().split("T")[0],
             value: parseFloat(value)
         }
         console.log(entry);
-        saveEntry(entry).then();
+        try {
+            await saveEntry(entry);
+        } catch (e) {
+            console.error("Save error: ", e);
+        }
     }
 
     const toggleDatePicker = () => {
@@ -43,9 +47,9 @@ export default function AddEntry({saveEntry}: { saveEntry: (entry: Entry) => Pro
     const clearStorage = async () => {
         try {
             await AsyncStorage.clear();
-            console.log('AsyncStorage został wyczyszczony');
+            console.log('AsyncStorage cleared');
         } catch (error) {
-            console.error('Błąd podczas czyszczenia AsyncStorage: ', error);
+            console.error('Error cleaning AsyncStorage: ', error);
         }
     };
 

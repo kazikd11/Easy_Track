@@ -1,7 +1,6 @@
-import {View, Text, Alert} from "react-native";
+import {View, Alert} from "react-native";
 import AddEntry from "@/components/AddEntry";
 import History from "@/components/History";
-import {DateTimePickerEvent} from "@react-native-community/datetimepicker";
 import Entry from "@/types/entry";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useEffect, useState} from "react";
@@ -58,10 +57,24 @@ export default function Index() {
         }
     }
 
+    const deleteEntry = async (date: string) => {
+        try {
+            const data = await AsyncStorage.getItem("entries")
+            const currentEntries: Entry[] = data ? JSON.parse(data) : [];
+
+            const newEntries = currentEntries.filter((entry) => entry.date !== date);
+
+            await AsyncStorage.setItem("entries", JSON.stringify(newEntries));
+            setEntries(newEntries);
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
     return (
         <View className="bg-primary flex-1 justify-center items-center">
             <AddEntry saveEntry={saveEntry}/>
-            <History entries={entries}/>
+            <History entries={entries} deleteEntry={deleteEntry}/>
         </View>
     )
 }

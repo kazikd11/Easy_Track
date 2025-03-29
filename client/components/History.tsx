@@ -1,5 +1,4 @@
-import {View, Text, FlatList, Pressable} from "react-native";
-import Entry from "@/types/entry";
+import {FlatList, Pressable, Text, View} from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import COLORS from "@/utils/colors";
 import {useEntries} from "@/context/EntriesContext";

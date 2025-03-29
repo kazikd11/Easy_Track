@@ -1,6 +1,6 @@
-import {View, Text, TextInput, Pressable, Button} from "react-native";
+import {Pressable, Text, TextInput, View} from "react-native";
 import DateTimePicker, {DateTimePickerEvent} from '@react-native-community/datetimepicker';
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import Entry from "@/types/entry";
 import {useEntries} from "@/context/EntriesContext";
 

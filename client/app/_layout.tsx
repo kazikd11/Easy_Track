@@ -1,11 +1,9 @@
 import {Stack} from "expo-router";
 import "@/global.css"
 import {useEffect} from "react";
-import {Platform, StatusBar, Text} from "react-native";
-import {SafeAreaView} from "react-native-safe-area-context";
+import {StatusBar} from "react-native";
 import COLORS from "@/utils/colors";
 import * as NavigationBar from 'expo-navigation-bar';
-import {Updates} from "@expo/config-plugins/build/android";
 import {EntriesProvider} from "@/context/EntriesContext";
 
 

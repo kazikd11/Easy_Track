@@ -6,6 +6,8 @@ const COLORS = {
     quinary: '#A60311',
     cwhite: '#FFFFFF',
     cblack: '#000000',
+    cgray: '#808080',
+    transparentRed: 'rgba(130, 0, 0, 0.1)',
 };
 
 module.exports = COLORS;

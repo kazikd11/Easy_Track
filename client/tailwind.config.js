@@ -15,6 +15,8 @@ module.exports = {
         quinary: COLORS.quinary,
         cwhite: COLORS.cwhite,
         cblack: COLORS.cblack,
+        cgray: COLORS.cgray,
+        transparentRed: COLORS.transparentRed,
       },
       textColor:{
         DEFAULT: COLORS.cwhite

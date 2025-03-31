@@ -15,12 +15,17 @@ const EntriesContext = createContext<EntriesContextType | undefined>(undefined);
 export const EntriesProvider = ({ children } : {children: React.ReactNode}) => {
     const [entries, setEntries] = useState<Entry[]>([]);
 
+    const sortEntries = (entries: Entry[]) => {
+        return entries.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    }
+
     useEffect(() => {
         const fetchEntries = async () => {
             try {
                 const data = await AsyncStorage.getItem("entries");
                 if (data) {
-                    setEntries(JSON.parse(data));
+                    const parsedData: Entry[] = JSON.parse(data);
+                    setEntries(sortEntries(parsedData))
                 }
             } catch (e) {
                 console.error("Get error", e);
@@ -49,7 +54,7 @@ export const EntriesProvider = ({ children } : {children: React.ReactNode}) => {
 
             currentEntries.push(entry);
             await AsyncStorage.setItem("entries", JSON.stringify(currentEntries));
-            setEntries(currentEntries);
+            setEntries(sortEntries(currentEntries))
         } catch (e) {
             console.error(e);
         }

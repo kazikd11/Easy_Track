@@ -6,9 +6,11 @@ export default function Index() {
 
 
     return (
-        <View className="bg-primary flex-1 justify-center items-center">
+        <View className="bg-primary flex-1 items-center">
+            <View className="h-[50%] w-[90%] mt-8">
+                <History/>
+            </View>
             <AddEntry/>
-            <History/>
         </View>
     )
 }

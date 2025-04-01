@@ -56,6 +56,13 @@ export const EntriesProvider = ({ children } : {children: React.ReactNode}) => {
             currentEntries.push(entry);
             await AsyncStorage.setItem("entries", JSON.stringify(currentEntries));
             setEntries(sortEntries(currentEntries))
+
+            Alert.alert(
+                "Success",
+                `Record for ${entry.date} saved successfully`,
+                [{ text: "OK" }]
+            )
+
         } catch (e) {
             console.error(e);
         }

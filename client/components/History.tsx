@@ -41,7 +41,7 @@ export default function History() {
                                         {year}
                                     </Text>
                                 </View>
-                                <Text className="text-cwhite">
+                                <Text className="text-cwhite ml-2">
                                     {item.value.toFixed(2)}
                                 </Text>
                                 <Pressable onPress={() => handleDeleteEntry(item.date)} className="pl-5 p-1">

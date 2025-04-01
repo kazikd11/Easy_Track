@@ -31,7 +31,6 @@ export default function Chart() {
     useEffect(() => {
         setChartData(mapEntries());
         updateRangeData(7)
-        console.log("Chart data updated");
     }, [entries]);
 
     const {state, isActive} = useChartPressState<{ x: number; y: { value: number; } }>({x: 0, y: {value: 0}});
@@ -46,7 +45,6 @@ export default function Chart() {
     const ticks = timeDomain.ticks(7).map((d) => d.getTime());
 
     const updateRangeData = (days: number) => {
-        console.log("update rangeData")
         if (days === 0) {
             setRangeData(chartData);
         } else {

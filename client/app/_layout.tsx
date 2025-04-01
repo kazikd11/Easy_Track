@@ -28,7 +28,7 @@ export default function RootLayout() {
 
     }, []);
     return (
-        <EntriesProvider >
+        <EntriesProvider>
             <Stack>
                 <Stack.Screen name="(tabs)" options={{
                     headerShown: false,

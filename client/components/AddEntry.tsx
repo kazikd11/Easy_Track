@@ -45,22 +45,6 @@ export default function AddEntry() {
         }
     };
 
-
-    // clears the AsyncStorage
-
-    // const clearStorage = async () => {
-    //     try {
-    //         await AsyncStorage.clear();
-    //         console.log('AsyncStorage cleared');
-    //     } catch (error) {
-    //         console.error('Error cleaning AsyncStorage: ', error);
-    //     }
-    // };
-    //
-    // useEffect(() => {
-    //     clearStorage().then();
-    // }, [])
-
     return (
         <View className="rounded-lg w-[80%] justify-center items-center mt-12  border-cgray border-2  pt-1 pl-1">
             <View className="justify-center items-center w-full h-20">

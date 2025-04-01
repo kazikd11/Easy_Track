@@ -26,6 +26,7 @@ export const EntriesProvider = ({ children } : {children: React.ReactNode}) => {
                 if (data) {
                     const parsedData: Entry[] = JSON.parse(data);
                     setEntries(sortEntries(parsedData))
+                    // console.log(sortEntries(parsedData));
                 }
             } catch (e) {
                 console.error("Get error", e);

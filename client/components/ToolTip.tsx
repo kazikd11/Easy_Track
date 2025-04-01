@@ -11,10 +11,10 @@ export default function ToolTip({x, y, font, number}: {
 
     const text = useDerivedValue(()=> number.value.toString(), [number]);
 
-    const textWidth = useDerivedValue(() => text.value.toString().length * 6, [text]);
+    const textWidth = useDerivedValue(() => text.value.toString().length * 8, [text]);
 
     const tx = useDerivedValue(() => x.value - textWidth.value / 2, [x, textWidth]);
-    const ty = useDerivedValue(() => y.value - 10, [y]);
+    const ty = useDerivedValue(() => y.value - 12, [y]);
 
     return (
         <>
@@ -24,14 +24,14 @@ export default function ToolTip({x, y, font, number}: {
                 text={text}
                 font={font}
                 color={COLORS.cwhite}
-                opacity={1}
+                opacity={0.5}
             />
             <Circle
                 r={6}
                 cx={x}
                 cy={y}
                 color={COLORS.cwhite}
-                opacity={0.8}
+                opacity={0.5}
             />
         </>
     );

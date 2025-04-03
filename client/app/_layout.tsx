@@ -18,8 +18,6 @@ export default function RootLayout() {
         const setNavBar = async () => {
             try {
                 await NavigationBar.setBackgroundColorAsync(COLORS.cblack);
-                // await NavigationBar.setBackgroundColorAsync(COLORS.tertiary);
-
             } catch (error) {
                 console.error(error);
             }
@@ -31,6 +29,12 @@ export default function RootLayout() {
         <EntriesProvider>
             <Stack>
                 <Stack.Screen name="(tabs)" options={{
+                    headerShown: false,
+                }}/>
+                <Stack.Screen name="account/login" options={{
+                    headerShown: false,
+                }}/>
+                <Stack.Screen name="account/register" options={{
                     headerShown: false,
                 }}/>
             </Stack>

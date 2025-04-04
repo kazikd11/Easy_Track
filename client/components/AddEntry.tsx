@@ -1,6 +1,6 @@
 import {Pressable, Text, TextInput, View} from "react-native";
 import DateTimePicker, {DateTimePickerEvent} from '@react-native-community/datetimepicker';
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import Entry from "@/types/entry";
 import {useEntries} from "@/context/EntriesContext";
 
@@ -8,8 +8,12 @@ export default function AddEntry() {
 
     const [date, setDate] = useState(new Date());
     const [show, setShow] = useState(false);
-    const [value, setValue] = useState("50");
-    const {saveEntry} = useEntries();
+    const {saveEntry,entries} = useEntries();
+    const [value, setValue] = useState("");
+
+    useEffect(() => {
+        setValue(entries.length > 0 ? entries[0].value.toString() : "");
+    })
 
     // sets the date
     const onChange = (event: DateTimePickerEvent, selectedDate: Date | undefined) => {

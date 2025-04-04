@@ -8,6 +8,7 @@ interface EntriesContextType {
     saveEntry: (entry: Entry) => Promise<void>;
     clearEntries: () => Promise<void>;
     deleteEntry: (date: string) => Promise<void>;
+    setEntries: (entries: Entry[]) => void;
 }
 
 const EntriesContext = createContext<EntriesContextType | undefined>(undefined);
@@ -94,7 +95,7 @@ export const EntriesProvider = ({ children } : {children: React.ReactNode}) => {
 
 
     return (
-        <EntriesContext.Provider value={{ entries, saveEntry, clearEntries, deleteEntry }}>
+        <EntriesContext.Provider value={{ entries, saveEntry, clearEntries, deleteEntry, setEntries }}>
             {children}
         </EntriesContext.Provider>
     );

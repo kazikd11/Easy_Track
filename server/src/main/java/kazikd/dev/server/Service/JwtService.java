@@ -20,7 +20,7 @@ import javax.crypto.SecretKey;
 @Service
 public class JwtService {
 
-    public String secretKey;
+    public final String secretKey;
 
     public JwtService(@Value("${jwt.secret}") String secretKey) {
         this.secretKey = secretKey;
@@ -56,12 +56,12 @@ public class JwtService {
                 .getPayload();
     }
 
-    public String extractUserName(String token) {
+    public String extractUserEmail(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
-    boolean validateToken(String token, UserDetails userDetails) {
-        final String username = extractUserName(token);
+    public boolean validateToken(String token, UserDetails userDetails) {
+        final String username = extractUserEmail(token);
         return (username.equals(userDetails.getUsername()) && !extractExpiration(token).before(new Date()));
     }
 

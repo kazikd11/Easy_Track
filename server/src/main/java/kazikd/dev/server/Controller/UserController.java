@@ -4,12 +4,10 @@ import kazikd.dev.server.Model.User;
 import kazikd.dev.server.Service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/auth")
 public class UserController {
 
     private final UserService userService;
@@ -30,8 +28,14 @@ public class UserController {
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/test")
-    public ResponseEntity<String> test() {
-        return ResponseEntity.ok("Test endpoint");
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> deleteUser() {
+        userService.deleteUser();
+        return ResponseEntity.ok("User deleted successfully");
     }
+
+//    @GetMapping("/test")
+//    public ResponseEntity<String> test() {
+//        return ResponseEntity.ok("Test endpoint");
+//    }
 }

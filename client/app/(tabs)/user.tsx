@@ -33,7 +33,7 @@ export default function User() {
 
     const handleFromCloud = async () => {
         try {
-            const response = await fetch("http://localhost:8080/sync-from-cloud", {
+            const response = await fetch("http://localhost:8080/weight-entires/sync-from-cloud", {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${user}`,
@@ -58,7 +58,7 @@ export default function User() {
 
     const handleToCloud = async () => {
         try {
-            const response = await fetch("http://localhost:8080/sync-to-cloud", {
+            const response = await fetch("http://localhost:8080/weight-entries/sync-to-cloud", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

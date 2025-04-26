@@ -4,7 +4,7 @@ import kazikd.dev.server.Model.User;
 import kazikd.dev.server.Repository.UserRepo;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +23,11 @@ public class UserService {
         this.jwtService = jwtService;
     }
 
+    public User getCurrentAuthenticatedUser() {
+        return userRepo.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+    }
+
+
     public String registerUser(User user) {
         String encryptedPassword = passEncryptor.encode(user.getPassword());
         user.setPassword(encryptedPassword);
@@ -31,8 +36,11 @@ public class UserService {
     }
 
     public String loginUser(User user) {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
         return jwtService.generateToken(user.getEmail());
     }
 
+    public void deleteUser() {
+        userRepo.delete(getCurrentAuthenticatedUser());
+    }
 }

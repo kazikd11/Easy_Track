@@ -1,21 +1,24 @@
 package kazikd.dev.server.Service;
 
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.JsonFactory;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.SecretKey;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
-
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.security.Keys;
-
-import javax.crypto.SecretKey;
 
 @Service
 public class JwtService {
@@ -27,7 +30,7 @@ public class JwtService {
     }
 
     public String generateToken(String username) {
-        Map<String,Object> claims = new HashMap<>();
+        Map<String, Object> claims = new HashMap<>();
 
         return Jwts.builder()
                 .claims(claims)
@@ -68,4 +71,24 @@ public class JwtService {
     private Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
+
+    public GoogleIdToken.Payload verifyGoogleToken(String token) {
+//        try {
+//            GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new JsonFactory() {
+//            })
+//                    .setAudience(Collections.singletonList("YOUR_CLIENT_ID.apps.googleusercontent.com"))
+//                    .build();
+//
+//            GoogleIdToken idToken = verifier.verify(token);
+//            if (idToken != null) {
+//                return idToken.getPayload();
+//            } else {
+//                return null;
+//            }
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+        return null;
+    }
+
 }

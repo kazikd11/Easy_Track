@@ -1,5 +1,6 @@
 package kazikd.dev.server.Service;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import kazikd.dev.server.Model.User;
 import kazikd.dev.server.Repository.UserRepo;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -42,5 +43,17 @@ public class UserService {
 
     public void deleteUser() {
         userRepo.delete(getCurrentAuthenticatedUser());
+    }
+
+    public String googleLogin(String token) {
+        GoogleIdToken.Payload payload = jwtService.verifyGoogleToken(token);
+        if(payload == null){
+            return "Invalid Google token";
+        }
+        String email = payload.getEmail();
+        if (userRepo.findByEmail(email) == null) {
+            userRepo.save(new User(email, passEncryptor.encode("password")));
+        }
+        return jwtService.generateToken(email);
     }
 }

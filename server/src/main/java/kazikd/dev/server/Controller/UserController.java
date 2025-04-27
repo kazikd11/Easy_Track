@@ -34,6 +34,10 @@ public class UserController {
         return ResponseEntity.ok("User deleted successfully");
     }
 
-
+    @PostMapping("/google")
+    public ResponseEntity<String> googleLogin(@RequestBody String token) {
+        String result = userService.googleLogin(token);
+        return ResponseEntity.ok(result);
+    }
 
 }

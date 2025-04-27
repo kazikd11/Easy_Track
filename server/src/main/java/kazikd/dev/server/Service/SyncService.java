@@ -7,8 +7,10 @@ import kazikd.dev.server.Repository.SyncRepo;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,6 +24,7 @@ public class SyncService {
         this.userService = userService;
     }
 
+    @Transactional
     public void syncToCloud(List<WeightEntryDTO> weightEntriesDTO) {
         User currentUser = userService.getCurrentAuthenticatedUser();
 
@@ -43,17 +46,35 @@ public class SyncService {
                 .toList();
     }
 
+    @Transactional
     public void deleteAllUserEntries() {
         User currentUser = userService.getCurrentAuthenticatedUser();
         syncRepo.deleteByUser(currentUser);
     }
 
-    @Transactional
-    protected void syncEntries(List<WeightEntry> weightEntries, User currentUser){
-        List<WeightEntry> existingEntries = syncRepo.findByUser(currentUser);
+    private void syncEntries(List<WeightEntry> incomingEntries, User currentUser) {
+        Map<LocalDate, WeightEntry> existingEntriesMap = syncRepo.findByUser(currentUser).stream()
+                .collect(Collectors.toMap(WeightEntry::getDate, entry -> entry));
 
-        Map<Long, WeightEntry> existingEntriesMap = existingEntries.stream()
-                .collect(Collectors.toMap(WeightEntry::getId, entry -> entry));
+        Set<LocalDate> incomingDates = incomingEntries.stream()
+                .map(WeightEntry::getDate)
+                .collect(Collectors.toSet());
+
+        for (WeightEntry entry : incomingEntries) {
+            WeightEntry existingEntry = existingEntriesMap.get(entry.getDate());
+            if (existingEntry == null) {
+                syncRepo.save(entry);
+            } else {
+                existingEntry.setWeight(entry.getWeight());
+                syncRepo.save(existingEntry);
+            }
+        }
+
+        for(WeightEntry entry : existingEntriesMap.values()) {
+            if (!incomingDates.contains(entry.getDate())) {
+                syncRepo.delete(entry);
+            }
+        }
     }
 
 

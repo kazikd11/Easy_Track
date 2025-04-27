@@ -34,8 +34,6 @@ public class UserController {
         return ResponseEntity.ok("User deleted successfully");
     }
 
-//    @GetMapping("/test")
-//    public ResponseEntity<String> test() {
-//        return ResponseEntity.ok("Test endpoint");
-//    }
+
+
 }

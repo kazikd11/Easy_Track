@@ -1,5 +1,6 @@
 package kazikd.dev.server.Controller;
 
+import kazikd.dev.server.Model.GoogleAuthToken;
 import kazikd.dev.server.Model.User;
 import kazikd.dev.server.Service.UserService;
 import org.springframework.http.HttpStatus;
@@ -35,8 +36,9 @@ public class UserController {
     }
 
     @PostMapping("/google")
-    public ResponseEntity<String> googleLogin(@RequestBody String token) {
-        String result = userService.googleLogin(token);
+    public ResponseEntity<String> googleLogin(@RequestBody GoogleAuthToken token) {
+        String result = userService.googleLogin(token.token());
+        System.out.println(token.token());
         return ResponseEntity.ok(result);
     }
 

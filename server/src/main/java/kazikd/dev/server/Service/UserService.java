@@ -9,6 +9,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 public class UserService {
 
@@ -52,7 +54,7 @@ public class UserService {
         }
         String email = payload.getEmail();
         if (userRepo.findByEmail(email) == null) {
-            userRepo.save(new User(email, passEncryptor.encode("password")));
+            userRepo.save(new User(email, passEncryptor.encode(UUID.randomUUID().toString())));
         }
         return jwtService.generateToken(email);
     }

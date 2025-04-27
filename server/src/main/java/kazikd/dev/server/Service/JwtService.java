@@ -4,7 +4,7 @@ package kazikd.dev.server.Service;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.gson.GsonFactory;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -23,11 +23,11 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    public final String secretKey;
+    @Value("${jwt.secret}")
+    private String secretKey;
 
-    public JwtService(@Value("${jwt.secret}") String secretKey) {
-        this.secretKey = secretKey;
-    }
+    @Value("${google.client.id}")
+    private String googleClientId;
 
     public String generateToken(String username) {
         Map<String, Object> claims = new HashMap<>();
@@ -35,8 +35,8 @@ public class JwtService {
         return Jwts.builder()
                 .claims(claims)
                 .subject(username)
-                .issuedAt(new java.util.Date(System.currentTimeMillis()))
-                .expiration(new java.util.Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 1000))
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 1000))
                 .signWith(getKey())
                 .compact();
     }
@@ -73,21 +73,17 @@ public class JwtService {
     }
 
     public GoogleIdToken.Payload verifyGoogleToken(String token) {
-//        try {
-//            GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new JsonFactory() {
-//            })
-//                    .setAudience(Collections.singletonList("YOUR_CLIENT_ID.apps.googleusercontent.com"))
-//                    .build();
-//
-//            GoogleIdToken idToken = verifier.verify(token);
-//            if (idToken != null) {
-//                return idToken.getPayload();
-//            } else {
-//                return null;
-//            }
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
+        GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new GsonFactory())
+                .setAudience(Collections.singletonList(googleClientId))
+                .build();
+        try {
+            GoogleIdToken idToken = verifier.verify(token);
+            if (idToken != null) {
+                return idToken.getPayload();
+            }
+        } catch (Exception e) {
+            System.out.println("Error verifying Google token: " + e.getMessage());
+        }
         return null;
     }
 

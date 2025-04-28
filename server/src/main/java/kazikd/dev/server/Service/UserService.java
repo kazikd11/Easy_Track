@@ -1,6 +1,7 @@
 package kazikd.dev.server.Service;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import kazikd.dev.server.ControllerException.InvalidGoogleTokenException;
 import kazikd.dev.server.ControllerException.InvalidRefreshTokenException;
 import kazikd.dev.server.ControllerException.InvalidUserDataException;
 import kazikd.dev.server.ControllerException.UserNotFoundException;
@@ -74,7 +75,7 @@ public class UserService {
     public RefreshEntity googleLogin(String token) {
         GoogleIdToken.Payload payload = jwtService.verifyGoogleToken(token);
         if (payload == null) {
-            throw new RuntimeException("Invalid Google token");
+            throw new InvalidGoogleTokenException("Invalid Google token");
         }
 
         String email = payload.getEmail();
@@ -116,4 +117,15 @@ public class UserService {
 
         return jwtService.generateToken(email);
     }
+
+    public void logout() {
+        User currentUser = getCurrentAuthenticatedUser();
+
+        currentUser.setRefreshToken(null);
+        currentUser.setRefreshTokenExpiry(null);
+        userRepo.save(currentUser);
+
+        SecurityContextHolder.clearContext();
+    }
+
 }

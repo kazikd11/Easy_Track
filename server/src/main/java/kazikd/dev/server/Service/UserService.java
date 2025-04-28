@@ -1,6 +1,9 @@
 package kazikd.dev.server.Service;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import kazikd.dev.server.ControllerException.InvalidRefreshTokenException;
+import kazikd.dev.server.ControllerException.UserNotFoundException;
+import kazikd.dev.server.Model.RefreshEntity;
 import kazikd.dev.server.Model.User;
 import kazikd.dev.server.Repository.UserRepo;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -9,6 +12,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
@@ -38,24 +43,66 @@ public class UserService {
         return "User registered successfully";
     }
 
-    public String loginUser(User user) {
+    public RefreshEntity loginUser(User user) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
-        return jwtService.generateToken(user.getEmail());
+        User dbuser = userRepo.findByEmail(user.getEmail());
+        String refreshToken = jwtService.generateRefreshToken(dbuser);
+        dbuser.setRefreshToken(refreshToken);
+        dbuser.setRefreshTokenExpiry(LocalDateTime.now().plus(Duration.ofMillis(jwtService.getRefreshExpirationTime())));
+        userRepo.save(dbuser);
+
+        String jwtToken = jwtService.generateToken(user.getEmail());
+
+        return new RefreshEntity(jwtToken, refreshToken);
     }
 
     public void deleteUser() {
         userRepo.delete(getCurrentAuthenticatedUser());
     }
 
-    public String googleLogin(String token) {
+    public RefreshEntity googleLogin(String token) {
         GoogleIdToken.Payload payload = jwtService.verifyGoogleToken(token);
-        if(payload == null){
-            return "Invalid Google token";
+        if (payload == null) {
+            throw new RuntimeException("Invalid Google token");
         }
+
         String email = payload.getEmail();
-        if (userRepo.findByEmail(email) == null) {
-            userRepo.save(new User(email, passEncryptor.encode(UUID.randomUUID().toString())));
+        User user = userRepo.findByEmail(email);
+        if (user == null) {
+            user = new User(email, passEncryptor.encode(UUID.randomUUID().toString()));
         }
+
+        String refreshToken = jwtService.generateRefreshToken(user);
+        user.setRefreshToken(refreshToken);
+        user.setRefreshTokenExpiry(LocalDateTime.now().plus(Duration.ofMillis(jwtService.getRefreshExpirationTime())));
+        userRepo.save(user);
+
+        String jwtToken = jwtService.generateToken(email);
+
+        return new RefreshEntity(jwtToken, refreshToken);
+    }
+
+
+    public String refreshToken(RefreshEntity tokens) {
+        String refreshToken = tokens.refreshToken();
+        String jwtToken = tokens.jwtToken();
+
+        String email;
+        try {
+            email = jwtService.extractUserEmail(jwtToken);
+        } catch (Exception e) {
+            throw new InvalidRefreshTokenException("Invalid JWT token");
+        }
+
+        User user = userRepo.findByEmail(email);
+        if (user == null) {
+            throw new UserNotFoundException("User not found");
+        }
+
+        if (user.isRefreshTokenExpired() || !refreshToken.equals(user.getRefreshToken())) {
+            throw new InvalidRefreshTokenException("Invalid or expired refresh token");
+        }
+
         return jwtService.generateToken(email);
     }
 }

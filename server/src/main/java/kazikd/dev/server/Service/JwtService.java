@@ -9,15 +9,14 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import kazikd.dev.server.Model.User;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 @Service
@@ -29,6 +28,13 @@ public class JwtService {
     @Value("${google.client.id}")
     private String googleClientId;
 
+    @Value("${jwt.expiration}")
+    private long expirationTime;
+
+    @Getter
+    @Value("${jwt.refresh.expiration}")
+    private long refreshExpirationTime;
+
     public String generateToken(String username) {
         Map<String, Object> claims = new HashMap<>();
 
@@ -36,7 +42,7 @@ public class JwtService {
                 .claims(claims)
                 .subject(username)
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 1000))
+                .expiration(new Date(System.currentTimeMillis() + expirationTime))
                 .signWith(getKey())
                 .compact();
     }
@@ -85,6 +91,14 @@ public class JwtService {
             System.out.println("Error verifying Google token: " + e.getMessage());
         }
         return null;
+    }
+
+    public boolean validateRefreshToken(User user, String refreshToken) {
+        return user != null && user.getRefreshToken() != null && user.getRefreshToken().equals(refreshToken) && !user.isRefreshTokenExpired();
+    }
+
+    public String generateRefreshToken(User dbuser) {
+        return UUID.randomUUID().toString();
     }
 
 }

@@ -1,6 +1,7 @@
 package kazikd.dev.server.Controller;
 
 import kazikd.dev.server.Model.GoogleAuthToken;
+import kazikd.dev.server.Model.RefreshEntity;
 import kazikd.dev.server.Model.User;
 import kazikd.dev.server.Service.UserService;
 import org.springframework.http.HttpStatus;
@@ -24,8 +25,8 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestBody User user) {
-        String result = userService.loginUser(user);
+    public ResponseEntity<RefreshEntity> loginUser(@RequestBody User user) {
+        RefreshEntity result = userService.loginUser(user);
         return ResponseEntity.ok(result);
     }
 
@@ -36,9 +37,14 @@ public class UserController {
     }
 
     @PostMapping("/google")
-    public ResponseEntity<String> googleLogin(@RequestBody GoogleAuthToken token) {
-        String result = userService.googleLogin(token.token());
-        System.out.println(token.token());
+    public ResponseEntity<RefreshEntity> googleLogin(@RequestBody GoogleAuthToken token) {
+        RefreshEntity result = userService.googleLogin(token.token());
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<String> refreshToken(@RequestBody RefreshEntity refreshEntity) {
+        String result = userService.refreshToken(refreshEntity);
         return ResponseEntity.ok(result);
     }
 

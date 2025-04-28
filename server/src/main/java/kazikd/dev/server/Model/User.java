@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,11 +26,18 @@ public class User {
 
     private String password;
 
+    private String refreshToken;
+    private LocalDateTime refreshTokenExpiry;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<WeightEntry> weightEntries = new ArrayList<>();
 
     public User(String email, String defaultPassword) {
         this.email = email;
         this.password = defaultPassword;
+    }
+
+    public boolean isRefreshTokenExpired() {
+        return refreshTokenExpiry == null || refreshTokenExpiry.isBefore(LocalDateTime.now()) || refreshToken == null;
     }
 }

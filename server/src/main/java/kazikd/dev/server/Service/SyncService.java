@@ -70,13 +70,12 @@ public class SyncService {
             }
         }
 
-        for(WeightEntry entry : existingEntriesMap.values()) {
+        for (WeightEntry entry : existingEntriesMap.values()) {
             if (!incomingDates.contains(entry.getDate())) {
                 syncRepo.delete(entry);
             }
         }
     }
-
 
 }
 

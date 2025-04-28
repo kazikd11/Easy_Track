@@ -2,6 +2,7 @@ package kazikd.dev.server.Service;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import kazikd.dev.server.ControllerException.InvalidRefreshTokenException;
+import kazikd.dev.server.ControllerException.InvalidUserDataException;
 import kazikd.dev.server.ControllerException.UserNotFoundException;
 import kazikd.dev.server.Model.RefreshEntity;
 import kazikd.dev.server.Model.User;
@@ -35,8 +36,18 @@ public class UserService {
         return userRepo.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
     }
 
+    private void validateUserData(User user) {
+        if (user.getEmail() == null || !user.getEmail().matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
+            throw new InvalidUserDataException("Invalid email format");
+        }
+
+        if (user.getPassword() == null || user.getPassword().length() < 8) {
+            throw new InvalidUserDataException("Password must be at least 8 characters long");
+        }
+    }
 
     public String registerUser(User user) {
+        validateUserData(user);
         String encryptedPassword = passEncryptor.encode(user.getPassword());
         user.setPassword(encryptedPassword);
         userRepo.save(user);
@@ -46,7 +57,7 @@ public class UserService {
     public RefreshEntity loginUser(User user) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
         User dbuser = userRepo.findByEmail(user.getEmail());
-        String refreshToken = jwtService.generateRefreshToken(dbuser);
+        String refreshToken = jwtService.generateRefreshToken();
         dbuser.setRefreshToken(refreshToken);
         dbuser.setRefreshTokenExpiry(LocalDateTime.now().plus(Duration.ofMillis(jwtService.getRefreshExpirationTime())));
         userRepo.save(dbuser);
@@ -72,7 +83,7 @@ public class UserService {
             user = new User(email, passEncryptor.encode(UUID.randomUUID().toString()));
         }
 
-        String refreshToken = jwtService.generateRefreshToken(user);
+        String refreshToken = jwtService.generateRefreshToken();
         user.setRefreshToken(refreshToken);
         user.setRefreshTokenExpiry(LocalDateTime.now().plus(Duration.ofMillis(jwtService.getRefreshExpirationTime())));
         userRepo.save(user);

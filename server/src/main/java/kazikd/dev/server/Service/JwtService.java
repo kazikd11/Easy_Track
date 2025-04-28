@@ -9,7 +9,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import kazikd.dev.server.Model.User;
+import kazikd.dev.server.ControllerException.InvalidGoogleTokenException;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -88,16 +88,12 @@ public class JwtService {
                 return idToken.getPayload();
             }
         } catch (Exception e) {
-            System.out.println("Error verifying Google token: " + e.getMessage());
+            throw new InvalidGoogleTokenException("Failed to verify Google token");
         }
         return null;
     }
 
-    public boolean validateRefreshToken(User user, String refreshToken) {
-        return user != null && user.getRefreshToken() != null && user.getRefreshToken().equals(refreshToken) && !user.isRefreshTokenExpired();
-    }
-
-    public String generateRefreshToken(User dbuser) {
+    public String generateRefreshToken() {
         return UUID.randomUUID().toString();
     }
 

@@ -2,6 +2,7 @@ import React, {createContext, useContext, useEffect, useState} from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Entry from "@/types/entry";
 import {Alert} from "react-native";
+import {usePopup} from "@/context/PopupProvider";
 
 interface EntriesContextType {
     entries: Entry[];
@@ -15,6 +16,7 @@ const EntriesContext = createContext<EntriesContextType | undefined>(undefined);
 
 export const EntriesProvider = ({ children } : {children: React.ReactNode}) => {
     const [entries, setEntries] = useState<Entry[]>([]);
+    const { showMessage, showChoice } = usePopup();
 
     const sortEntries = (entries: Entry[]) => {
         return entries.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
@@ -27,7 +29,6 @@ export const EntriesProvider = ({ children } : {children: React.ReactNode}) => {
                 if (data) {
                     const parsedData: Entry[] = JSON.parse(data);
                     setEntries(sortEntries(parsedData))
-                    // console.log(sortEntries(parsedData));
                 }
             } catch (e) {
                 console.error("Get error", e);
@@ -42,15 +43,11 @@ export const EntriesProvider = ({ children } : {children: React.ReactNode}) => {
             const currentEntries: Entry[] = data ? JSON.parse(data) : [];
 
             const existingEntry = currentEntries.find(
-                (existing) => existing.date === entry.date
+                existing => existing.date === entry.date
             );
 
             if (existingEntry) {
-                Alert.alert(
-                    "Error",
-                    "Record with this date already exists",
-                    [{ text: "OK" }]
-                );
+                showMessage({ text: "Record with this date already exists", type: "error" });
                 return;
             }
 
@@ -58,14 +55,11 @@ export const EntriesProvider = ({ children } : {children: React.ReactNode}) => {
             await AsyncStorage.setItem("entries", JSON.stringify(currentEntries));
             setEntries(sortEntries(currentEntries))
 
-            Alert.alert(
-                "Success",
-                `Record for ${entry.date} saved successfully`,
-                [{ text: "OK" }]
-            )
+            showMessage({ text: `Record for ${entry.date} saved`, type: "info" });
 
         } catch (e) {
             console.error(e);
+            showMessage({ text: "Failed to save entry", type: "error" });
         }
     }
 
@@ -84,14 +78,21 @@ export const EntriesProvider = ({ children } : {children: React.ReactNode}) => {
     }
 
     const clearEntries = async () => {
-        try {
-            await AsyncStorage.removeItem("entries");
-            setEntries([]);
-        } catch (e) {
-            console.error("Clear error", e);
-        }
+        showChoice({
+            message: "Are you sure you want to delete all local data?",
+            confirmLabel: "Yes, delete",
+            onConfirm: async () => {
+                try {
+                    await AsyncStorage.removeItem("entries");
+                    setEntries([]);
+                    showMessage({ text: "All local data cleared", type: "info" });
+                } catch (e) {
+                    console.error("Clear error", e);
+                    showMessage({ text: "Failed to clear local data", type: "error" });
+                }
+            }
+        });
     };
-
 
 
     return (

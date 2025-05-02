@@ -3,83 +3,112 @@ import {useAuth} from "@/context/AuthContext";
 import {useRouter} from "expo-router";
 import {SafeAreaView} from "react-native-safe-area-context";
 import {useEntries} from "@/context/EntriesContext";
+import {usePopup} from "@/context/PopupProvider";
 
 export default function User() {
     const {user, logout} = useAuth();
     const {clearEntries, entries, setEntries} = useEntries();
     const router = useRouter();
+    const {showMessage, showChoice} = usePopup();
 
-    const handleClearStorage = async () => {
-        Alert.alert(
-            "Confirm deletion",
-            "This will erase all your local data",
-            [
-                {
-                    text: "Cancel",
-                },
-                {
-                    text: "Confirm",
-                    onPress: async () => {
-                        try {
-                            await clearEntries();
-                        } catch (e) {
-                            console.error('Error clearing storage: ', e);
-                        }
-                    },
-                },
-            ]
-        );
+    const handleClearStorage = () => {
+        showChoice({
+            message: "This will erase all your local data. Are you sure?",
+            confirmLabel: "Yes, delete",
+            cancelLabel: "Cancel",
+            onConfirm: async () => {
+                try {
+                    await clearEntries();
+                    showMessage({ text: "Data cleared", type: "info" });
+                } catch (e) {
+                    console.error("Error clearing storage:", e);
+                    showMessage({ text: "Failed to clear data", type: "error" });
+                }
+            },
+            onCancel: () => {
+                showMessage({ text: "Operation cancelled", type: "info" });
+            }
+        });
     };
+
 
     const handleFromCloud = async () => {
         try {
-            const response = await fetch("http://localhost:8080/weight-entires/sync-from-cloud", {
+            const response = await fetch("http://localhost:8080/sync", {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${user}`,
                 },
             });
 
-            const data = await response.json()
+            const data = await response.json();
 
             if (response.ok) {
-                Alert.alert("Success", "Data synced from cloud")
-                setEntries(data.entries)
-            }
-            else {
-                Alert.alert("Sync failed", data.message);
-            }
 
+                if (entries && entries.length > 0) {
+                    if (!data || data.length === 0) {
+                        showMessage({ text: "No data in the cloud", type: "info" });
+                    } else {
+                        showChoice({
+                            message: "Data conflict: which data should be prioritized?",
+                            confirmLabel: "Use cloud data",
+                            cancelLabel: "Use local data",
+                            onConfirm: async () => {
+                                setEntries(data);
+                                showMessage({ text: "Cloud data used", type: "info" });
+                            },
+                            onCancel: async () => {
+                                await handleToCloud();
+                                showMessage({ text: "Local data used and synced to cloud", type: "info" });
+                            }
+                        });
+                    }
+                } else {
+                    if (data && data.length > 0) {
+                        setEntries(data);
+                        showMessage({ text: "Data synced from cloud", type: "info" });
+                    } else {
+                        showMessage({ text: "No data in the cloud", type: "info" });
+                    }
+                }
+            } else {
+                showMessage({ text: data.message || "Sync failed", type: "error" });
+            }
         } catch (e) {
             console.error(e);
-            Alert.alert("Error", "Failed to sync from cloud")
+            showMessage({ text: "Network error while syncing from cloud", type: "error" });
         }
     };
 
+
     const handleToCloud = async () => {
+        if (entries.length === 0) {
+            showMessage({ text: "No local data to sync", type: "error" });
+            return;
+        }
         try {
-            const response = await fetch("http://localhost:8080/weight-entries/sync-to-cloud", {
+            const response = await fetch("http://localhost:8080/sync", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${user}`,
                 },
-                body: JSON.stringify({ entries }),
+                body: JSON.stringify(entries),
             });
 
-            const data = await response.json()
+            const data = await response.json();
 
             if (response.ok) {
-                Alert.alert("Success", "Data synced from cloud")
-            }
-            else {
-                Alert.alert("Sync failed", data.message);
+                showMessage({ text: "Data synced to cloud", type: "info" });
+            } else {
+                showMessage({ text: data.message || "Sync failed", type: "error" });
             }
         } catch (e) {
             console.error(e);
-            Alert.alert("Error", "Failed to sync to cloud");
+            showMessage({ text: "Network error while syncing to cloud", type: "error" });
         }
     };
+
 
     return (
         <SafeAreaView className="flex-1 bg-primary p-4" >

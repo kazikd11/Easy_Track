@@ -1,6 +1,6 @@
 import {useEffect, useRef} from "react";
 import {Animated, Text} from "react-native";
-import {MessageProps, MessageType} from "@/types/popups";
+import {MessageProps} from "@/types/popups";
 import COLORS from "@/utils/colors";
 
 export default function MessagePopup(

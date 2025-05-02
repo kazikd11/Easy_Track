@@ -1,4 +1,4 @@
-import {Text, Pressable, Alert} from "react-native";
+import {Text, Pressable} from "react-native";
 import {useAuth} from "@/context/AuthContext";
 import {useRouter} from "expo-router";
 import {SafeAreaView} from "react-native-safe-area-context";

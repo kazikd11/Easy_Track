@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import { View, Text, TextInput, Pressable, Alert } from "react-native";
 import { useAuth } from "@/context/AuthContext";
 import COLORS from "@/utils/colors";

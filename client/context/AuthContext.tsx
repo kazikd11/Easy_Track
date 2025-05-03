@@ -1,66 +1,52 @@
 import React, {createContext, useContext, useEffect, useState} from "react";
-import * as SecureStore from "expo-secure-store";
+import {usePopup} from "@/context/PopupContext";
+import {getJwt, getRefreshToken} from "@/utils/jwt";
 
-interface AuthContextType{
+interface AuthContextType {
     user: string | null;
-    login: (jwt: string) => void;
+    login: (jwt: string) => Promise<void>;
     logout: () => Promise<void>;
+    register: (email: string, password: string) => Promise<void>;
+    refresh: () => Promise<void>;
 }
 
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider = ({ children } : {children: React.ReactNode}) => {
+export const AuthProvider = ({children}: { children: React.ReactNode }) => {
     const [user, setUser] = useState<AuthContextType["user"]>(null);
+    const [refresh, setRefresh] = useState<string | null>(null);
+    const {showMessage} = usePopup();
 
     //load user on start
     useEffect(() => {
-        const loadUser = async () => {
-            const token = await getJwt();
-            if (token) setUser(token)
-        };
-        loadUser().catch((e) => console.log(e));
-        // setUser("test");
+        (async () => {
+            const [token, refreshToken] = await Promise.all([
+                getJwt(),
+                getRefreshToken()
+            ]);
+            if (token) setUser(token);
+            if (refreshToken) setRefresh(refreshToken);
+        })();
     }, []);
 
-    //jwt access functions
-    const saveJwt = async (jwt: string) => {
-        try {
-            await SecureStore.setItemAsync('jwt', jwt);
-        } catch (error) {
-            console.error('Error saving JWT', error);
-        }
-    };
-
-    const getJwt = async () => {
-        try {
-            return await SecureStore.getItemAsync('jwt');
-        } catch (error) {
-            console.error('Error reading JWT', error);
-            return null;
-        }
-    };
-
-    const deleteJwt = async () => {
-        try {
-            await SecureStore.deleteItemAsync('jwt');
-        } catch (error) {
-            console.error('Error deleting JWT', error);
-        }
-    };
 
     const login = async (jwt: string) => {
-        await saveJwt(jwt).catch((e) => {console.error(e)})
+        await saveJwt(jwt).catch((e) => {
+            console.error(e)
+        })
         setUser(jwt);
     };
 
     const logout = async () => {
-        await deleteJwt().catch((e) => {console.error(e)})
+        await deleteJwt().catch((e) => {
+            console.error(e)
+        })
         setUser(null);
     };
 
     return (
-        <AuthContext.Provider value={{ user, login, logout }}>
+        <AuthContext.Provider value={{user, login, logout}}>
             {children}
         </AuthContext.Provider>
     );

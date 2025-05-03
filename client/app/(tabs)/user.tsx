@@ -3,7 +3,7 @@ import {useAuth} from "@/context/AuthContext";
 import {useRouter} from "expo-router";
 import {SafeAreaView} from "react-native-safe-area-context";
 import {useEntries} from "@/context/EntriesContext";
-import {usePopup} from "@/context/PopupProvider";
+import {usePopup} from "@/context/PopupContext";
 
 export default function User() {
     const {user, logout} = useAuth();

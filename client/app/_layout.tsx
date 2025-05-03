@@ -7,7 +7,7 @@ import * as NavigationBar from 'expo-navigation-bar';
 import {EntriesProvider} from "@/context/EntriesContext";
 import {AuthProvider} from "@/context/AuthContext";
 import * as SystemUI from 'expo-system-ui';
-import {PopupProvider} from "@/context/PopupProvider";
+import {PopupProvider} from "@/context/PopupContext";
 
 SystemUI.setBackgroundColorAsync(COLORS.primary).catch(() => {
     console.error('Error setting system UI background color');

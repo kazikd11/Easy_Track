@@ -61,12 +61,6 @@ export default function Login() {
             <Pressable className="p-3 mb-2 rounded bg-cwhite border-2" onPress={handleLogin}>
                 <Text className="text-cblack text-center">Log in</Text>
             </Pressable>
-
-            <Text className="text-cwhite text-center w-full">or</Text>
-
-            <Pressable className="bg-blue-500 p-3 mb-2 mt-3 rounded">
-                <Text className="text-cgray text-center">Log in with Google (Disabled)</Text>
-            </Pressable>
         </View>
     );
 }

@@ -1,7 +1,7 @@
 import React, {createContext, useContext, useEffect, useState} from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Entry from "@/types/entry";
-import {usePopup} from "@/context/PopupProvider";
+import {usePopup} from "@/context/PopupContext";
 
 interface EntriesContextType {
     entries: Entry[];

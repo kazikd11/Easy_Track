@@ -1,4 +1,4 @@
-import React, {createContext, useCallback, useContext, useEffect, useState} from "react";
+import React, {createContext, useCallback, useContext, useState} from "react";
 import MessagePopup from "@/components/MessagePopup";
 import {MessageProps, ChoiceProps} from "@/types/popups";
 import ChoicePopup from "@/components/ChoicePopup";

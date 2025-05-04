@@ -1,7 +1,6 @@
 import React, {createContext, useContext, useEffect, useState} from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import Entry from "@/types/entry";
-import {usePopup} from "@/context/PopupContext";
+import {clearEntriesInStorage, getEntriesFromStorage, saveEntriesToStorage} from "@/utils/storage";
 
 interface EntriesContextType {
     entries: Entry[];
@@ -15,74 +14,41 @@ const EntriesContext = createContext<EntriesContextType | undefined>(undefined);
 
 export const EntriesProvider = ({children}: { children: React.ReactNode }) => {
         const [entries, setEntries] = useState<Entry[]>([]);
-        const {showMessage, showChoice} = usePopup();
 
         const sortEntries = (entries: Entry[]) => {
             return entries.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
         }
 
         useEffect(() => {
-            const fetchEntries = async () => {
-                try {
-                    const data = await AsyncStorage.getItem("entries");
-                    if (data) {
-                        const parsedData: Entry[] = JSON.parse(data);
-                        setEntries(sortEntries(parsedData))
-                    }
-                } catch (e) {
-                    console.error("Get error", e);
-                }
-            };
-            fetchEntries().then();
+            (async () => {
+                const data = await getEntriesFromStorage()
+                if (data) setEntries(sortEntries(data))
+            })();
         }, []);
 
         const saveEntry = async (entry: Entry) => {
-            try {
-                const data = await AsyncStorage.getItem("entries")
-                const currentEntries: Entry[] = data ? JSON.parse(data) : [];
+            const currentEntries = await getEntriesFromStorage();
+            const existingEntry = currentEntries.find(existing => existing.date === entry.date);
 
-                const existingEntry = currentEntries.find(
-                    existing => existing.date === entry.date
-                );
-
-                if (existingEntry) {
-                    showMessage({text: "Record with this date already exists", type: "error"});
-                    return;
-                }
-
-                currentEntries.push(entry);
-                await AsyncStorage.setItem("entries", JSON.stringify(currentEntries));
-                setEntries(sortEntries(currentEntries))
-
-                showMessage({text: `Record for ${entry.date} saved`, type: "info"});
-
-            } catch (e) {
-                console.error(e);
-                showMessage({text: "Failed to save entry", type: "error"});
+            if (existingEntry) {
+                throw new Error("Record with this date already exists");
             }
-        }
+
+            currentEntries.push(entry);
+            await saveEntriesToStorage(currentEntries);
+            setEntries(sortEntries(currentEntries));
+        };
 
         const deleteEntry = async (date: string) => {
-            try {
-                const data = await AsyncStorage.getItem("entries")
-                const currentEntries: Entry[] = data ? JSON.parse(data) : [];
-
-                const newEntries = currentEntries.filter((entry) => entry.date !== date);
-
-                await AsyncStorage.setItem("entries", JSON.stringify(newEntries));
-                setEntries(newEntries);
-            } catch (e) {
-                console.error(e);
-            }
+            const data = await getEntriesFromStorage()
+            const newEntries = data.filter((entry) => entry.date !== date);
+            await saveEntriesToStorage(newEntries);
+            setEntries(newEntries);
         }
 
         const clearEntries = async () => {
-            try {
-                await AsyncStorage.removeItem("entries");
-                setEntries([]);
-            } catch (e) {
-                throw new Error("Failed to clear entries");
-            }
+            await clearEntriesInStorage()
+            setEntries([]);
         };
 
 

@@ -36,14 +36,16 @@ export default function AddEntry() {
         const entry: Entry = {
             date: date.toISOString().split("T")[0],
             value: parseFloat(value)
-        }
+        };
         try {
             await saveEntry(entry);
-            showMessage({text: "debug"});
-        } catch (e) {
+            showMessage({ text: `Entry for ${entry.date} saved`, type: "info" });
+        } catch (e : any) {
             console.error("Save error: ", e);
+            showMessage({ text: e?.message || "Failed to save entry", type: "error" });
         }
-    }
+    };
+
 
     const handleValueChange = (inputValue: string) => {
         const regex = /^\d{0,3}(\.\d{0,2})?$/;

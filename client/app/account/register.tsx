@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Pressable, Alert } from "react-native";
+import { View, Text, TextInput, Pressable } from "react-native";
 import COLORS from "@/utils/colors";
 import { usePopup } from "@/context/PopupContext";
 

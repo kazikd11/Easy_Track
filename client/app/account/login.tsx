@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Pressable, Alert } from "react-native";
+import { View, Text, TextInput, Pressable } from "react-native";
 import { useAuth } from "@/context/AuthContext";
 import { usePopup } from "@/context/PopupContext";
 import COLORS from "@/utils/colors";
@@ -30,6 +30,7 @@ export default function Login() {
 
             if (response.ok && data.jwtToken && data.refreshToken) {
                 await login(data.jwtToken, data.refreshToken);
+                showMessage({ text: "Login successful!", type: "info" })
             } else {
                 showMessage({ text: data.message || "Unexpected error, please try again later", type: "error" });
             }

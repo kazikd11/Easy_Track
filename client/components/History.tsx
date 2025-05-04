@@ -2,19 +2,23 @@ import {FlatList, Pressable, Text, View} from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import COLORS from "@/utils/colors";
 import {useEntries} from "@/context/EntriesContext";
+import {usePopup} from "@/context/PopupContext";
 
 export default function History() {
 
     const {deleteEntry, entries} = useEntries();
-
+    const {showMessage} = usePopup();
 
     const handleDeleteEntry = async (date: string) => {
         try {
-            await deleteEntry(date)
+            await deleteEntry(date);
+            showMessage({ text: "Entry deleted", type: "info" });
         } catch (e) {
             console.error("Delete error", e);
+            showMessage({ text: "Failed to delete entry", type: "error" });
         }
-    }
+    };
+
 
 
     return (

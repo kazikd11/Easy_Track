@@ -1,5 +1,5 @@
 import {useEffect, useRef} from "react";
-import {Animated, Text, View} from "react-native";
+import {Animated, Text} from "react-native";
 import {MessageProps} from "@/types/popups";
 import COLORS from "@/utils/colors";
 

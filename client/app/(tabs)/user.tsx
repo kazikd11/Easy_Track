@@ -4,7 +4,6 @@ import {useRouter} from "expo-router";
 import {SafeAreaView} from "react-native-safe-area-context";
 import {useEntries} from "@/context/EntriesContext";
 import {usePopup} from "@/context/PopupContext";
-import {useEffect} from "react";
 
 export default function User() {
     const {user, logout} = useAuth();
@@ -20,10 +19,8 @@ export default function User() {
             onConfirm: async () => {
                 try {
                     await clearEntries();
-                    console.log("debug");
                     showMessage({text: "Local data cleared", type: "info"})
-                }
-                catch (e) {
+                } catch (e) {
                     console.error("Clear storage error:", e);
                     showMessage({text: "Error clearing local data", type: "error"})
                 }
@@ -32,8 +29,6 @@ export default function User() {
 
         });
     };
-    
-
 
     const handleFromCloud = async () => {
         try {
@@ -44,42 +39,44 @@ export default function User() {
                 },
             });
 
+            if (!response.ok) {
+                const data = await response.json();
+                throw new Error(data.message || "Sync failed");
+            }
+
             const data = await response.json();
 
-            if (response.ok) {
-
-                if (entries && entries.length > 0) {
-                    if (!data || data.length === 0) {
-                        showMessage({text: "No data in the cloud", type: "info"});
-                    } else {
-                        showChoice({
-                            message: "Data conflict: which data should be prioritized?",
-                            confirmLabel: "Use cloud data",
-                            cancelLabel: "Use local data",
-                            onConfirm: async () => {
-                                setEntries(data);
-                                showMessage({text: "Cloud data used", type: "info"});
-                            },
-                            onCancel: async () => {
-                                await handleToCloud();
-                                showMessage({text: "Local data used and synced to cloud", type: "info"});
-                            }
-                        });
-                    }
-                } else {
-                    if (data && data.length > 0) {
-                        setEntries(data);
-                        showMessage({text: "Data synced from cloud", type: "info"});
-                    } else {
-                        showMessage({text: "No data in the cloud", type: "info"});
-                    }
-                }
-            } else {
-                showMessage({text: data.message || "Sync failed", type: "error"});
+            if (!data || data.length === 0) {
+                showMessage({text: "No data in the cloud", type: "info"});
+                return;
             }
-        } catch (e) {
-            console.error(e);
-            showMessage({text: "Network error while syncing from cloud", type: "error"});
+
+            if (entries && entries.length > 0) {
+                showChoice({
+                    message: "Data conflict: which data should be prioritized?",
+                    confirmLabel: "Use cloud data",
+                    cancelLabel: "Use local data",
+                    onConfirm: async () => {
+                        setEntries(data);
+                        showMessage({text: "Cloud data synced", type: "info"});
+                    },
+                    onCancel: async () => {
+                        await handleToCloud();
+                        showMessage({text: "Local data synced to cloud", type: "info"});
+                    },
+                });
+            } else {
+                setEntries(data);
+                showMessage({text: "Data synced from cloud", type: "info"});
+            }
+        } catch (e: any) {
+            console.error("Sync error:", e);
+            showMessage({
+                text: e?.message.includes("Network request failed")
+                    ? "Network error while syncing from cloud"
+                    : e?.message || "Unexpected error",
+                type: "error",
+            });
         }
     };
 
@@ -118,12 +115,22 @@ export default function User() {
             confirmLabel: "Sync and logout",
             cancelLabel: "Just logout",
             onConfirm: async () => {
-                await handleToCloud();
-                await logout();
-
+                try {
+                    await logout();
+                    showMessage({text: "Logged out and data synced to cloud", type: "info"});
+                } catch (error) {
+                    console.error("Logout error:", error);
+                    showMessage({text: "Error logging out", type: "error"});
+                }
             },
             onCancel: async () => {
-                await logout();
+                try {
+                    await logout();
+                    showMessage({text: "Logged out successfully", type: "info"});
+                } catch (error) {
+                    console.error("Logout error:", error);
+                    showMessage({text: "Error logging out", type: "error"});
+                }
             }
         });
     };
@@ -155,16 +162,13 @@ export default function User() {
                     showMessage({text: "Network error during deletion", type: "error"});
                 }
             },
-            onCancel: () => {
-                showMessage({text: "Deletion cancelled", type: "info"});
-            },
         });
     };
 
 
     return (
         <SafeAreaView className="flex-1 bg-primary p-4">
-            {!user ? (
+            {user ? (
                 <>
                     <Pressable className="p-4 border-b border-cgray" onPress={() => router.navigate('/account/login')}>
                         <Text className="text-cwhite">Login</Text>

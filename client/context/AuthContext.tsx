@@ -1,5 +1,4 @@
 import React, {createContext, useContext, useEffect, useState} from "react";
-import {usePopup} from "@/context/PopupContext";
 import {deleteJwt, deleteRefreshToken, getJwt, saveJwt, saveRefreshToken} from "@/utils/jwt";
 import {useEntries} from "@/context/EntriesContext";
 
@@ -15,7 +14,6 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({children}: { children: React.ReactNode }) => {
     const [user, setUser] = useState<AuthContextType["user"]>(null);
-    const {showMessage} = usePopup();
     const {clearEntries} = useEntries();
 
     //load user on start
@@ -33,7 +31,6 @@ export const AuthProvider = ({children}: { children: React.ReactNode }) => {
             saveRefreshToken(refresh)
         ])
         setUser(jwt);
-        showMessage({text: "Logged in successfully", type: "info"});
     };
 
     const logout = async () => {
@@ -43,7 +40,6 @@ export const AuthProvider = ({children}: { children: React.ReactNode }) => {
             clearEntries()
         ])
         setUser(null);
-        showMessage({text: "Logged out successfully", type: "info"});
     };
 
     const refresh = async (jwt: string) => {

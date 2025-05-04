@@ -1,39 +1,55 @@
 import * as SecureStore from "expo-secure-store";
 
 export const saveJwt = async (jwt: string) => {
-    await SecureStore.setItemAsync('jwt', jwt).catch((e) => {
-        console.error("Error saving JWT:", e);
-    });
+    try {
+        await SecureStore.setItemAsync('jwt', jwt);
+    } catch (e) {
+        console.error("saveJwt error:", e);
+        throw new Error("Failed to save JWT");
+    }
 };
 
 export const getJwt = async () => {
-    return await SecureStore.getItemAsync('jwt').catch((e) => {
-        console.error("Error reading JWT:", e);
-        return null;
-    });
+    try {
+        return await SecureStore.getItemAsync('jwt');
+    } catch (e) {
+        console.error("getJwt error:", e);
+        throw new Error("Failed to read JWT");
+    }
 };
 
 export const deleteJwt = async () => {
-    await SecureStore.deleteItemAsync('jwt').catch((e) => {
-        console.error("Error deleting JWT:", e);
-    });
+    try {
+        await SecureStore.deleteItemAsync('jwt');
+    } catch (e) {
+        console.error("deleteJwt error:", e);
+        throw new Error("Failed to delete JWT");
+    }
 };
 
 export const saveRefreshToken = async (refreshToken: string) => {
-    await SecureStore.setItemAsync('refreshToken', refreshToken).catch((e) => {
-        console.error("Error saving refreshToken:", e);
-    });
+    try {
+        await SecureStore.setItemAsync('refreshToken', refreshToken);
+    } catch (e) {
+        console.error("saveRefreshToken error:", e);
+        throw new Error("Failed to save refresh token");
+    }
 };
 
 export const getRefreshToken = async () => {
-    return await SecureStore.getItemAsync('refreshToken').catch((e) => {
-        console.error("Error reading refreshToken:", e);
-        return null;
-    });
+    try {
+        return await SecureStore.getItemAsync('refreshToken');
+    } catch (e) {
+        console.error("getRefreshToken error:", e);
+        throw new Error("Failed to read refresh token");
+    }
 };
 
 export const deleteRefreshToken = async () => {
-    await SecureStore.deleteItemAsync('refreshToken').catch((e) => {
-        console.error("Error deleting refreshToken:", e);
-    });
+    try {
+        await SecureStore.deleteItemAsync('refreshToken');
+    } catch (e) {
+        console.error("deleteRefreshToken error:", e);
+        throw new Error("Failed to delete refresh token");
+    }
 };

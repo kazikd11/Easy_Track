@@ -11,6 +11,8 @@ export default function User() {
     const router = useRouter();
     const {showMessage, showChoice} = usePopup();
 
+    const apiUrl = process.env.EXPO_PUBLIC_API_URL
+
     const handleClearStorage = () => {
         showChoice({
             message: "This will erase all your local data. Are you sure?",
@@ -32,7 +34,7 @@ export default function User() {
 
     const handleFromCloud = async () => {
         try {
-            const response = await fetch("http://localhost:8080/sync", {
+            const response = await fetch(`${apiUrl}/sync`, {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${user}`,
@@ -87,7 +89,7 @@ export default function User() {
             return;
         }
         try {
-            const response = await fetch("http://localhost:8080/sync", {
+            const response = await fetch(`${apiUrl}/sync`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -143,7 +145,7 @@ export default function User() {
             cancelLabel: "Cancel",
             onConfirm: async () => {
                 try {
-                    const response = await fetch("http://localhost:8080/delete", {
+                    const response = await fetch(`${apiUrl}/delete`, {
                         method: "DELETE",
                         headers: {
                             "Authorization": `Bearer ${user}`,
@@ -168,7 +170,7 @@ export default function User() {
 
     return (
         <SafeAreaView className="flex-1 bg-primary p-4">
-            {user ? (
+            {!user ? (
                 <>
                     <Pressable className="p-4 border-b border-cgray" onPress={() => router.navigate('/account/login')}>
                         <Text className="text-cwhite">Login</Text>

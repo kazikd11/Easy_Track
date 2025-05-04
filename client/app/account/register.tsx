@@ -8,6 +8,8 @@ export default function Register() {
     const [password, setPassword] = useState("");
     const { showMessage } = usePopup();
 
+    const apiUrl = process.env.EXPO_PUBLIC_API_URL
+
     const validateInput = (): boolean => {
         const emailRegex = /^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$/;
 
@@ -27,7 +29,7 @@ export default function Register() {
     const handleRegister = async () => {
         if (!validateInput()) return
         try {
-            const response = await fetch("http://localhost:8080/auth/register", {
+            const response = await fetch(`${apiUrl}/auth/register`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, password }),

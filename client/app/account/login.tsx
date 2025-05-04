@@ -11,6 +11,8 @@ export default function Login() {
     const { login } = useAuth();
     const { showMessage } = usePopup();
 
+    const apiUrl = process.env.EXPO_PUBLIC_API_URL;
+
     const handleLogin = async () => {
         if (!email || !password) {
             showMessage({ text: "Please fill in both fields", type: "error" });
@@ -18,7 +20,7 @@ export default function Login() {
         }
 
         try {
-            const response = await fetch("http://localhost:8080/auth/login", {
+            const response = await fetch(`${apiUrl}/auth/login`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

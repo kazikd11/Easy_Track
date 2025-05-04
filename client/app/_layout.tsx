@@ -31,10 +31,11 @@ export default function RootLayout() {
         setNavBar().then();
 
     }, []);
+
     return (
-        <AuthProvider>
-            <PopupProvider>
-                <EntriesProvider>
+        <PopupProvider>
+            <EntriesProvider>
+                <AuthProvider>
                     <Stack
                         screenOptions={{
                             animation: 'fade',
@@ -51,8 +52,8 @@ export default function RootLayout() {
 
                         }}/>
                     </Stack>
-                </EntriesProvider>
-            </PopupProvider>
-        </AuthProvider>
+                </AuthProvider>
+            </EntriesProvider>
+        </PopupProvider>
     )
 }

@@ -1,4 +1,4 @@
-import React, {createContext, useContext, useState} from "react";
+import React, {createContext, useCallback, useContext, useEffect, useState} from "react";
 import MessagePopup from "@/components/MessagePopup";
 import {MessageProps, ChoiceProps} from "@/types/popups";
 import ChoicePopup from "@/components/ChoicePopup";
@@ -15,19 +15,19 @@ export const PopupProvider = ({children}: { children: React.ReactNode }) => {
     const [message, setMessage] = useState<MessageProps|null>(null)
     const [choice, setChoice] = useState<ChoiceProps|null>(null)
 
-    const showMessage = (props: MessageProps) => {
-        setMessage(props)
-    }
+    const showMessage = useCallback((props: MessageProps) => {
+        setMessage(props);
+    }, []);
 
-    const showChoice = (props: ChoiceProps) => {
+    const showChoice = useCallback((props: ChoiceProps) => {
         setChoice(props)
-    }
+    }, [])
 
     return (
         <PopupContext.Provider value={{ showMessage, showChoice }}>
             {children}
-            {message && <MessagePopup onHide={() => setMessage(null)} {...message} />}
-            {choice && (<ChoicePopup onHide={()=>setChoice(null)}{...choice}/>)}
+            {message && (<MessagePopup onHide={() => setMessage(null)} {...message} />)}
+            {choice && (<ChoicePopup onHide={()=>setChoice(null)} {...choice}/>)}
         </PopupContext.Provider>
     )
 }

@@ -1,5 +1,5 @@
 import {useEffect, useRef} from "react";
-import {Animated, Text} from "react-native";
+import {Animated, Text, View} from "react-native";
 import {MessageProps} from "@/types/popups";
 import COLORS from "@/utils/colors";
 
@@ -24,7 +24,7 @@ export default function MessagePopup(
                 duration: 500,
                 useNativeDriver: true
             }).start(() => onHide())
-        })
+        }, 2500)
 
         return () => clearTimeout(timeout)
     }, [])
@@ -40,9 +40,10 @@ export default function MessagePopup(
     };
 
     return (
-        <Animated.View style={{opacity}}
-                       className="absolute bottom-20 left-20 right-20 bg-secondary p-4 rounded-t-lg shadow-lg z-50">
-            <Text style={{color:getTextColor()}}>{text}</Text>
+        <Animated.View
+            style={{opacity}}
+            className="absolute bottom-24 left-5 right-5 bg-secondary p-4 rounded-t-lg shadow-lg z-50">
+            <Text style={{color: getTextColor()}}>{text}</Text>
         </Animated.View>
     )
 }

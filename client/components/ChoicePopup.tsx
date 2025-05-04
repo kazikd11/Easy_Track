@@ -43,6 +43,7 @@ export default function ChoicePopup(
                 useNativeDriver: true,
             }),
         ]).start(() => onHide());
+        onHide();
     };
 
     const handleConfirm = () => {
@@ -55,7 +56,11 @@ export default function ChoicePopup(
         handleClose();
     };
     return (
-        <View className="absolute bottom-24 left-5 right-5 p-4 rounded-xl shadow-lg z-50 bg-tertiary border border-cgray">
+        <Animated.View
+            style={{
+                transform: [{translateY}],
+                opacity,
+            }} className="absolute bottom-24 left-5 right-5 p-4 rounded-xl z-50 bg-tertiary border-cgray">
             <Text className="text-center font-bold text-cwhite mb-4">{message}</Text>
             <View className="flex-row justify-between">
                 <Pressable
@@ -71,6 +76,6 @@ export default function ChoicePopup(
                     <Text className="text-quinary">{confirmLabel}</Text>
                 </Pressable>
             </View>
-        </View>
+        </Animated.View>
     );
 }

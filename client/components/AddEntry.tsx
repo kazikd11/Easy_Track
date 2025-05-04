@@ -3,6 +3,7 @@ import DateTimePicker, {DateTimePickerEvent} from '@react-native-community/datet
 import {useEffect, useState} from "react";
 import Entry from "@/types/entry";
 import {useEntries} from "@/context/EntriesContext";
+import {usePopup} from "@/context/PopupContext";
 
 export default function AddEntry() {
 
@@ -11,9 +12,11 @@ export default function AddEntry() {
     const {saveEntry,entries} = useEntries();
     const [value, setValue] = useState("");
 
+    const {showMessage} = usePopup();
+
     useEffect(() => {
         setValue(entries.length > 0 ? entries[0].value.toString() : "");
-    })
+    },[])
 
     // sets the date
     const onChange = (event: DateTimePickerEvent, selectedDate: Date | undefined) => {
@@ -36,6 +39,7 @@ export default function AddEntry() {
         }
         try {
             await saveEntry(entry);
+            showMessage({text: "debug"});
         } catch (e) {
             console.error("Save error: ", e);
         }

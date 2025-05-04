@@ -1,6 +1,6 @@
 import React, {createContext, useContext, useEffect, useState} from "react";
 import {usePopup} from "@/context/PopupContext";
-import {deleteJwt, deleteRefreshToken, getJwt, getRefreshToken, saveJwt, saveRefreshToken} from "@/utils/jwt";
+import {deleteJwt, deleteRefreshToken, getJwt, saveJwt, saveRefreshToken} from "@/utils/jwt";
 
 interface AuthContextType {
     user: string | null;

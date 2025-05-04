@@ -1,12 +1,31 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, Pressable, Alert } from "react-native";
 import COLORS from "@/utils/colors";
+import { usePopup } from "@/context/PopupContext";
 
 export default function Register() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const { showMessage } = usePopup();
+
+    const validateInput = (): boolean => {
+        const emailRegex = /^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$/;
+
+        if (!emailRegex.test(email)) {
+            showMessage({ text: "Invalid email format", type: "error" });
+            return false;
+        }
+
+        if (!password || password.length < 8) {
+            showMessage({ text: "Password must be at least 8 characters long", type: "error" });
+            return false;
+        }
+
+        return true;
+    };
 
     const handleRegister = async () => {
+        if (!validateInput()) return
         try {
             const response = await fetch("http://localhost:8080/auth/register", {
                 method: "POST",
@@ -14,21 +33,21 @@ export default function Register() {
                 body: JSON.stringify({ email, password }),
             });
 
+            const data = await response.json();
+
             if (!response.ok) {
-                const errorData = await response.json();
-                Alert.alert("Error", errorData.message);
+                showMessage({ text: data.message || "Unexpected error, please try again later", type: "error" });
                 return;
             }
 
-            const data = await response.json();
             if (data && data.success) {
-                Alert.alert("Success", "User registered");
+                showMessage({ text: "User registered successfully", type: "info" });
             } else {
-                Alert.alert("Error", "Something went wrong, please try again");
+                showMessage({ text: "Unexpected response from server", type: "error" });
             }
         } catch (error) {
             console.error("Registration error:", error);
-            Alert.alert("Error", "Something went wrong, please try again");
+            showMessage({ text: "Network error. Please try again.", type: "error" });
         }
     };
 

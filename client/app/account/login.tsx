@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, Pressable, Alert } from "react-native";
 import { useAuth } from "@/context/AuthContext";
+import { usePopup } from "@/context/PopupContext";
 import COLORS from "@/utils/colors";
 
 export default function Login() {
@@ -8,10 +9,11 @@ export default function Login() {
     const [password, setPassword] = useState("");
 
     const { login } = useAuth();
+    const { showMessage } = usePopup();
 
     const handleLogin = async () => {
         if (!email || !password) {
-            Alert.alert("Error", "Please fill in both fields");
+            showMessage({ text: "Please fill in both fields", type: "error" });
             return;
         }
 
@@ -26,13 +28,14 @@ export default function Login() {
 
             const data = await response.json();
 
-            if (response.ok && data.jwt) {
-                login(data.jwt)
+            if (response.ok && data.jwtToken && data.refreshToken) {
+                await login(data.jwtToken, data.refreshToken);
             } else {
-                Alert.alert("Login failed", data.message);
+                showMessage({ text: data.message || "Unexpected error, please try again later", type: "error" });
             }
         } catch (e) {
             console.error("Login error", e);
+            showMessage({ text: "Network error, please try again later", type: "error" });
         }
     };
 

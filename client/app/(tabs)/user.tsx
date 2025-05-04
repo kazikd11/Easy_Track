@@ -109,6 +109,15 @@ export default function User() {
         }
     };
 
+    const handleLogout = async () => {
+        try {
+            await logout();
+        } catch (e) {
+            console.error("Logout error", e);
+            showMessage({ text: "Network error, please try again later", type: "error" });
+        }
+    }
+
 
     return (
         <SafeAreaView className="flex-1 bg-primary p-4" >
@@ -124,7 +133,7 @@ export default function User() {
                 </>
             ) : (
                 <>
-                    <Pressable className="p-4 border-b border-cgray" onPress={logout}>
+                    <Pressable className="p-4 border-b border-cgray" onPress={handleLogout}>
                         <Text className="text-cwhite">Logout</Text>
                     </Pressable>
 

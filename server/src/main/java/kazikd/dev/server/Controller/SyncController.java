@@ -1,5 +1,6 @@
 package kazikd.dev.server.Controller;
 
+import kazikd.dev.server.Model.MessageResponse;
 import kazikd.dev.server.Model.WeightEntryDTO;
 import kazikd.dev.server.Service.SyncService;
 import org.springframework.http.ResponseEntity;
@@ -17,9 +18,9 @@ public class SyncController {
     }
 
     @PostMapping()
-    public ResponseEntity<String> syncToCloud(@RequestBody List<WeightEntryDTO> weightEntries) {
+    public ResponseEntity<MessageResponse> syncToCloud(@RequestBody List<WeightEntryDTO> weightEntries) {
         syncService.syncToCloud(weightEntries);
-        return ResponseEntity.ok("Data synced to cloud");
+        return ResponseEntity.ok(new MessageResponse("Data synced to cloud"));
     }
 
     @GetMapping()
@@ -28,8 +29,8 @@ public class SyncController {
     }
 
     @DeleteMapping()
-    public ResponseEntity<String> deleteAllUserEntries() {
+    public ResponseEntity<MessageResponse> deleteAllUserEntries() {
         syncService.deleteAllUserEntries();
-        return ResponseEntity.ok("All user entries deleted");
+        return ResponseEntity.ok(new MessageResponse("All user entries deleted"));
     }
 }

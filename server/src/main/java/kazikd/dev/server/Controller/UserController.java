@@ -1,6 +1,7 @@
 package kazikd.dev.server.Controller;
 
 import kazikd.dev.server.Model.GoogleAuthToken;
+import kazikd.dev.server.Model.MessageResponse;
 import kazikd.dev.server.Model.RefreshEntity;
 import kazikd.dev.server.Model.User;
 import kazikd.dev.server.Service.UserService;
@@ -19,9 +20,9 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestBody User user) {
+    public ResponseEntity<MessageResponse> registerUser(@RequestBody User user) {
         String result = userService.registerUser(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(result);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new MessageResponse(result));
     }
 
     @PostMapping("/login")
@@ -31,9 +32,9 @@ public class UserController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteUser() {
+    public ResponseEntity<MessageResponse> deleteUser() {
         userService.deleteUser();
-        return ResponseEntity.ok("User deleted successfully");
+        return ResponseEntity.ok(new MessageResponse("User deleted successfully"));
     }
 
     @PostMapping("/google")
@@ -43,15 +44,15 @@ public class UserController {
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<String> refreshToken(@RequestBody RefreshEntity refreshEntity) {
+    public ResponseEntity<MessageResponse> refreshToken(@RequestBody RefreshEntity refreshEntity) {
         String result = userService.refreshToken(refreshEntity);
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(new MessageResponse(result));
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<String> logout() {
+    public ResponseEntity<MessageResponse> logout() {
         userService.logout();
-        return ResponseEntity.ok("Logged out successfully");
+        return ResponseEntity.ok(new MessageResponse("Logged out successfully"));
     }
 
 }

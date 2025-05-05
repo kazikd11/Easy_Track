@@ -1,5 +1,5 @@
 import React, {createContext, useContext, useEffect, useState} from "react";
-import {deleteJwt, deleteRefreshToken, getJwt, saveJwt, saveRefreshToken} from "@/utils/jwt";
+import {deleteJwt, deleteRefreshToken, getJwt, saveJwt, saveRefreshToken} from "@/asyncStorageAccess/jwt";
 import {useEntries} from "@/context/EntriesContext";
 
 interface AuthContextType {

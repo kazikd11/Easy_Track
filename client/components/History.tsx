@@ -8,6 +8,7 @@ export default function History() {
 
     const {deleteEntry, entries} = useEntries();
     const {showMessage} = usePopup();
+    console.log(entries)
 
     const handleDeleteEntry = async (date: string) => {
         try {
@@ -18,6 +19,7 @@ export default function History() {
             showMessage({ text: "Failed to delete entry", type: "error" });
         }
     };
+    console.log(entries)
 
 
 
@@ -46,7 +48,7 @@ export default function History() {
                                     </Text>
                                 </View>
                                 <Text className="text-cwhite ml-2">
-                                    {item.value.toFixed(2)}
+                                    {typeof item.weight === 'number' ? item.weight.toFixed(2) : '—'}
                                 </Text>
                                 <Pressable onPress={() => handleDeleteEntry(item.date)} className="pl-5 p-1">
                                     <Ionicons name="trash" color={COLORS.quaternary}

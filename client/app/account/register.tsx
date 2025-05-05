@@ -1,12 +1,14 @@
-import React, { useState } from "react";
-import { View, Text, TextInput, Pressable } from "react-native";
+import React, {useState} from "react";
+import {View, Text, TextInput, Pressable, Keyboard} from "react-native";
 import COLORS from "@/utils/colors";
-import { usePopup } from "@/context/PopupContext";
+import {usePopup} from "@/context/PopupContext";
+import {useRouter} from "expo-router";
 
 export default function Register() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const { showMessage } = usePopup();
+    const {showMessage} = usePopup();
+    const router = useRouter();
 
     const apiUrl = process.env.EXPO_PUBLIC_API_URL
 
@@ -14,12 +16,12 @@ export default function Register() {
         const emailRegex = /^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$/;
 
         if (!emailRegex.test(email)) {
-            showMessage({ text: "Invalid email format", type: "error" });
+            showMessage({text: "Invalid email format", type: "error"});
             return false;
         }
 
         if (!password || password.length < 8) {
-            showMessage({ text: "Password must be at least 8 characters long", type: "error" });
+            showMessage({text: "Password must be at least 8 characters long", type: "error"});
             return false;
         }
 
@@ -27,29 +29,28 @@ export default function Register() {
     };
 
     const handleRegister = async () => {
+        Keyboard.dismiss();
         if (!validateInput()) return
         try {
             const response = await fetch(`${apiUrl}/auth/register`, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, password }),
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({email, password}),
             });
 
             const data = await response.json();
 
             if (!response.ok) {
-                showMessage({ text: data.message || "Unexpected error, please try again later", type: "error" });
+                showMessage({text: data.message || "Unexpected error, please try again later", type: "error"});
                 return;
             }
 
-            if (data && data.success) {
-                showMessage({ text: "User registered successfully", type: "info" });
-            } else {
-                showMessage({ text: "Unexpected response from server", type: "error" });
-            }
+            showMessage({text: "User registered successfully", type: "info"});
+            router.back()
+
         } catch (error) {
             console.error("Registration error:", error);
-            showMessage({ text: "Network error. Please try again.", type: "error" });
+            showMessage({text: "Network error. Please try again.", type: "error"});
         }
     };
 

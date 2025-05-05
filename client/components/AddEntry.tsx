@@ -1,4 +1,4 @@
-import {Pressable, Text, TextInput, View} from "react-native";
+import {Keyboard, Pressable, Text, TextInput, View} from "react-native";
 import DateTimePicker, {DateTimePickerEvent} from '@react-native-community/datetimepicker';
 import {useEffect, useState} from "react";
 import Entry from "@/types/entry";
@@ -15,7 +15,7 @@ export default function AddEntry() {
     const {showMessage} = usePopup();
 
     useEffect(() => {
-        setValue(entries.length > 0 ? entries[0].value.toString() : "");
+        setValue(entries.length > 0 ? entries[0].weight.toString() : "");
     },[])
 
     // sets the date
@@ -33,13 +33,18 @@ export default function AddEntry() {
 
     //handlers
     const handleConfirm = async () => {
+        Keyboard.dismiss();
+        if (!value || parseFloat(value) <= 0) {
+            showMessage({ text: "Please enter a proper value", type: "error" });
+            return;
+        }
         const entry: Entry = {
             date: date.toISOString().split("T")[0],
-            value: parseFloat(value)
+            weight: parseFloat(value)
         };
         try {
             await saveEntry(entry);
-            showMessage({ text: `Entry for ${entry.date} saved`, type: "info" });
+            showMessage({ text: `Entry saved`, type: "info" });
         } catch (e : any) {
             console.error("Save error: ", e);
             showMessage({ text: e?.message || "Failed to save entry", type: "error" });

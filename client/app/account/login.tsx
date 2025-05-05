@@ -1,19 +1,25 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Pressable } from "react-native";
+import {View, Text, TextInput, Pressable, Keyboard} from "react-native";
 import { useAuth } from "@/context/AuthContext";
 import { usePopup } from "@/context/PopupContext";
 import COLORS from "@/utils/colors";
+import {useRouter} from "expo-router";
+import {syncFromCloud, syncToCloud} from "@/lib/cloudSync";
+import {useEntries} from "@/context/EntriesContext";
 
 export default function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const router = useRouter();
 
     const { login } = useAuth();
-    const { showMessage } = usePopup();
+    const { entries, setEntries } = useEntries();
+    const { showMessage, showChoice } = usePopup();
 
     const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
     const handleLogin = async () => {
+        Keyboard.dismiss();
         if (!email || !password) {
             showMessage({ text: "Please fill in both fields", type: "error" });
             return;
@@ -33,6 +39,17 @@ export default function Login() {
             if (response.ok && data.jwtToken && data.refreshToken) {
                 await login(data.jwtToken, data.refreshToken);
                 showMessage({ text: "Login successful!", type: "info" })
+
+                await syncFromCloud(
+                    data.jwtToken,
+                    entries,
+                    setEntries,
+                    showChoice,
+                    showMessage,
+                    () => syncToCloud(entries, data.jwtToken, showMessage)
+                );
+
+                router.back()
             } else {
                 showMessage({ text: data.message || "Unexpected error, please try again later", type: "error" });
             }

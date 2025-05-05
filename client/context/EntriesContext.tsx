@@ -1,6 +1,6 @@
 import React, {createContext, useContext, useEffect, useState} from "react";
 import Entry from "@/types/entry";
-import {clearEntriesInStorage, getEntriesFromStorage, saveEntriesToStorage} from "@/utils/storage";
+import {clearEntriesInStorage, getEntriesFromStorage, saveEntriesToStorage} from "@/asyncStorageAccess/storage";
 
 interface EntriesContextType {
     entries: Entry[];

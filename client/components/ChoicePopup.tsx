@@ -60,7 +60,8 @@ export default function ChoicePopup(
             style={{
                 transform: [{translateY}],
                 opacity,
-            }} className="absolute bottom-24 left-5 right-5 p-4 rounded-xl z-50 bg-tertiary border-cgray">
+                bottom: 80,
+            }} className="absolute left-5 right-5 p-4 rounded-xl z-50 bg-tertiary border-cgray">
             <Text className="text-center font-bold text-cwhite mb-4">{message}</Text>
             <View className="flex-row justify-between">
                 <Pressable

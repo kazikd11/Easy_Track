@@ -22,7 +22,7 @@ export default function Chart() {
 
     const mapEntries = () => entries.map(entry => ({
         date: mapDate(entry.date),
-        value: entry.value
+        value: entry.weight,
     }));
 
     const [chartData, setChartData] = useState(mapEntries());

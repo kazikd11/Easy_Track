@@ -49,7 +49,7 @@ public class UserController {
         return ResponseEntity.ok(new MessageResponse(result));
     }
 
-    @PostMapping("/logout")
+    @DeleteMapping("/logout")
     public ResponseEntity<MessageResponse> logout() {
         userService.logout();
         return ResponseEntity.ok(new MessageResponse("Logged out successfully"));

@@ -31,6 +31,14 @@ export default function AddEntry() {
         setShow(x => !x);
     }
 
+    const formatDate = (date: Date): string => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+
+
     //handlers
     const handleConfirm = async () => {
         Keyboard.dismiss();
@@ -39,7 +47,7 @@ export default function AddEntry() {
             return;
         }
         const entry: Entry = {
-            date: date.toISOString().split("T")[0],
+            date: formatDate(date),
             weight: parseFloat(value)
         };
         try {

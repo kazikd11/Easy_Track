@@ -1,4 +1,5 @@
 import Entry from "@/types/entry";
+import {saveEntriesToStorage} from "@/asyncStorageAccess/storage";
 
 export const syncFromCloud = async (
     user: string | null,
@@ -41,6 +42,7 @@ export const syncFromCloud = async (
                 cancelLabel: "Use local data",
                 onConfirm: async () => {
                     setEntries(data);
+                    await saveEntriesToStorage(data)
                     showMessage({ text: "Cloud data synced", type: "info" });
                 },
                 onCancel: async () => {
@@ -50,6 +52,7 @@ export const syncFromCloud = async (
             });
         } else {
             setEntries(data);
+            await saveEntriesToStorage(data)
             showMessage({ text: "Data synced from cloud", type: "info" });
         }
     } catch (e) {

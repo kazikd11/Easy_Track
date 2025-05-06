@@ -2,12 +2,13 @@
   "expo": {
     "name": "Easy Track",
     "slug": "Easy_Track",
+    "owner": "kazikd11",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true, 
+    "newArchEnabled": true,
     "ios": {
       "supportsTablet": true
     },
@@ -38,6 +39,14 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "50f67269-54eb-4345-b218-8b783f044b72"
+      }
     }
   }
 }

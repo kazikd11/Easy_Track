@@ -8,7 +8,6 @@ export default function History() {
 
     const {deleteEntry, entries} = useEntries();
     const {showMessage} = usePopup();
-    console.log(entries)
 
     const handleDeleteEntry = async (date: string) => {
         try {
@@ -19,8 +18,6 @@ export default function History() {
             showMessage({ text: "Failed to delete entry", type: "error" });
         }
     };
-    console.log(entries)
-
 
 
     return (

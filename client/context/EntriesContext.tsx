@@ -47,8 +47,10 @@ export const EntriesProvider = ({children}: { children: React.ReactNode }) => {
         }
 
         const clearEntries = async () => {
-            await clearEntriesInStorage()
-            setEntries([]);
+            if(entries.length !== 0) {
+                await clearEntriesInStorage()
+                setEntries([]);
+            }
         };
 
 

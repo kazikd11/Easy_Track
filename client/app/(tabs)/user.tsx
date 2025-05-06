@@ -5,6 +5,7 @@ import {SafeAreaView} from "react-native-safe-area-context";
 import {useEntries} from "@/context/EntriesContext";
 import {usePopup} from "@/context/PopupContext";
 import {logoutWithOptionalSync, syncFromCloud, syncToCloud} from "@/lib/cloudSync";
+import GoogleAuth from "@/components/GoogleAuth";
 
 export default function User() {
     const { user, logout } = useAuth();
@@ -93,6 +94,7 @@ export default function User() {
                     <Pressable className="p-4 border-b border-cgray" onPress={() => router.navigate('/account/register')}>
                         <Text className="text-cwhite">Register</Text>
                     </Pressable>
+                    <GoogleAuth/>
                 </>
             ) : (
                 <>

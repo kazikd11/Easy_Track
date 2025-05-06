@@ -5,59 +5,55 @@ import {useEntries} from "@/context/EntriesContext";
 import {usePopup} from "@/context/PopupContext";
 
 export default function History() {
-
     const {deleteEntry, entries} = useEntries();
     const {showMessage} = usePopup();
 
     const handleDeleteEntry = async (date: string) => {
         try {
             await deleteEntry(date);
-            showMessage({ text: "Entry deleted", type: "info" });
+            showMessage({text: "Entry deleted", type: "info"});
         } catch (e) {
             console.error("Delete error", e);
-            showMessage({ text: "Failed to delete entry", type: "error" });
+            showMessage({text: "Failed to delete entry", type: "error"});
         }
     };
 
-
     return (
-        <View className=" p-4 flex-1 w-full rounded-lg mt-4">
-            <View className="w-full flex-row justify-between mb-6 ml-1.5">
-                <Text className="text-cwhite text-xl ">Date</Text>
-                <Text className="text-cwhite text-xl ml-3">Weight</Text>
-                <Text className="text-quaternary text-xl ml-0.5">Delete</Text>
+        <View className="p-4 flex-1 w-full rounded-lg mt-4">
+            <View className="w-full flex-row justify-between mb-3 px-3">
+                <Text className="text-cgray font-semibold w-1/3">Date</Text>
+                <Text className="text-cgray font-semibold text-center w-1/3">Weight</Text>
+                <View className="w-1/3" />
             </View>
+
             <FlatList
                 data={entries}
+                keyExtractor={(item) => item.date.toString()}
                 showsVerticalScrollIndicator={false}
-                renderItem={
-                    ({item}) => {
-                        const [year, month, day] = item.date.split("T")[0].split("-");
+                ListEmptyComponent={
+                    <Text className="text-cgray text-center mt-10">No entries yet</Text>
+                }
+                renderItem={({item, index}) => {
+                    const [year, month, day] = item.date.split("T")[0].split("-");
 
-                        return (
-                            <View className="flex-row justify-between items-center p-2">
-                                <View>
-                                    <Text className="text-cwhite">
-                                        {`${day}.${month}`}
-                                    </Text>
-                                    <Text className="text-cgray">
-                                        {year}
-                                    </Text>
-                                </View>
-                                <Text className="text-cwhite ml-2">
+                    return (
+                        <View className={`flex-row justify-between items-center px-3 py-3 border-b border-cgray/30`}>
+                            <View>
+                                <Text className="text-cwhite">{`${day}.${month}`}</Text>
+                                <Text className="text-cgray text-xs">{year}</Text>
+                            </View>
+                            <View className="items-center">
+                                <Text className="text-cwhite">
                                     {typeof item.weight === 'number' ? item.weight.toFixed(2) : '—'}
                                 </Text>
-                                <Pressable onPress={() => handleDeleteEntry(item.date)} className="pl-5 p-1">
-                                    <Ionicons name="trash" color={COLORS.quaternary}
-                                              size={16}/>
-                                </Pressable>
-
                             </View>
-                        )
-                    }
-                }
-                keyExtractor={(item) => item.date.toString()
-                }/>
+                            <Pressable onPress={() => handleDeleteEntry(item.date)} className="p-2">
+                                <Ionicons name="trash-outline" color={COLORS.quaternary} size={20} />
+                            </Pressable>
+                        </View>
+                    );
+                }}
+            />
         </View>
     );
 }

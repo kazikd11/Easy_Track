@@ -86,34 +86,34 @@ export default function User() {
         <SafeAreaView className="flex-1 bg-primary p-4">
             {!user ? (
                 <>
-                    <Pressable className="p-4 border-b border-cgray" onPress={() => router.navigate('/account/login')}>
+                    <Pressable className="p-4 border-b border-cgray/30" onPress={() => router.navigate('/account/login')}>
                         <Text className="text-cwhite">Login</Text>
                     </Pressable>
 
-                    <Pressable className="p-4 border-b border-cgray" onPress={() => router.navigate('/account/register')}>
+                    <Pressable className="p-4 border-b border-cgray/30" onPress={() => router.navigate('/account/register')}>
                         <Text className="text-cwhite">Register</Text>
                     </Pressable>
                 </>
             ) : (
                 <>
-                    <Pressable className="p-4 border-b border-cgray" onPress={handleLogout}>
+                    <Pressable className="p-4 border-b border-cgray/30" onPress={handleLogout}>
                         <Text className="text-cwhite">Logout</Text>
                     </Pressable>
 
-                    <Pressable className="p-4 border-b border-cgray" onPress={handleFromCloud}>
+                    <Pressable className="p-4 border-b border-cgray/30" onPress={handleFromCloud}>
                         <Text className="text-cwhite">Sync from cloud</Text>
                     </Pressable>
 
-                    <Pressable className="p-4 border-b border-cgray" onPress={handleToCloud}>
+                    <Pressable className="p-4 border-b border-cgray/30" onPress={handleToCloud}>
                         <Text className="text-cwhite">Sync to cloud</Text>
                     </Pressable>
 
-                    <Pressable className="p-4 border-b border-cgray" onPress={handleDeleteAccount}>
+                    <Pressable className="p-4 border-b border-cgray/30" onPress={handleDeleteAccount}>
                         <Text className="text-quinary">Delete account and all data</Text>
                     </Pressable>
                 </>
             )}
-            <Pressable className="p-4 border-b border-cgray" onPress={handleClearStorage}>
+            <Pressable className="p-4 border-b border-cgray/30" onPress={handleClearStorage}>
                 <Text className="text-quinary">Clear all local data</Text>
             </Pressable>
         </SafeAreaView>

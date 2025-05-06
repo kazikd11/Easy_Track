@@ -69,8 +69,8 @@ export default function AddEntry() {
     };
 
     return (
-        <View className="rounded-lg w-[80%] justify-center items-center mt-12  border-cgray border-2  pt-1 pl-1">
-            <View className="justify-center items-center w-full h-20">
+        <View className="rounded-lg w-[80%] justify-center items-center mt-6  border-cgray/20 border-2 pt-1 ">
+            <View className="justify-center items-center w-full h-20 pl-1 pb-2">
 
                 <View className="w-full h-12 flex-row justify-between items-center pr-3 pl-1">
                     <TextInput
@@ -103,9 +103,9 @@ export default function AddEntry() {
             </View>
             <Pressable
                 onPress={handleConfirm}
-                className="pb-2"
+                className="w-full h-14 justify-center items-center"
             >
-                <Text className="text-quaternary text-3xl">Add Entry</Text>
+                <Text className="text-quinary text-2xl">Add Entry</Text>
             </Pressable>
         </View>
     );

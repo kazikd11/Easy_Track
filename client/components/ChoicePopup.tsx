@@ -66,7 +66,7 @@ export default function ChoicePopup(
             <View className="flex-row justify-between">
                 <Pressable
                     onPress={handleCancel}
-                    className="px-4 py-2 rounded bg-transparentRed"
+                    className="px-4 py-2 rounded bg-secondary"
                 >
                     <Text className="text-cwhite">{cancelLabel}</Text>
                 </Pressable>

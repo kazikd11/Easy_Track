@@ -64,7 +64,7 @@ public class SyncService {
             WeightEntry existingEntry = existingEntriesMap.get(entry.getDate());
             if (existingEntry == null) {
                 syncRepo.save(entry);
-            } else {
+            } else if (Double.compare(existingEntry.getWeight(), entry.getWeight()) != 0){
                 existingEntry.setWeight(entry.getWeight());
                 syncRepo.save(existingEntry);
             }

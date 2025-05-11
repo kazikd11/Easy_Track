@@ -45,9 +45,7 @@ public class UserController {
 
     @PostMapping("/refresh")
     public ResponseEntity<MessageResponse> refreshToken(@RequestBody RefreshEntity refreshEntity) {
-//        System.out.println(refreshEntity);
         String result = userService.refreshToken(refreshEntity);
-//        System.out.println(result);
         return ResponseEntity.ok(new MessageResponse(result));
     }
 

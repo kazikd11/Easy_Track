@@ -9,6 +9,7 @@ import {AuthProvider} from "@/context/AuthContext";
 import * as SystemUI from 'expo-system-ui';
 import {PopupProvider} from "@/context/PopupContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {registerBackgroundTask} from "@/utils/backgroundSync";
 
 SystemUI.setBackgroundColorAsync(COLORS.primary).catch(() => {
     console.error('Error setting system UI background color');
@@ -20,6 +21,7 @@ export default function RootLayout() {
         StatusBar.setBarStyle('light-content');
         StatusBar.setBackgroundColor(COLORS.primary);
         StatusBar.setTranslucent(true);
+
         // const clearAllStorage = async () => {
         //     try {
         //         await AsyncStorage.clear();
@@ -38,7 +40,8 @@ export default function RootLayout() {
                 console.error(error);
             }
         }
-        setNavBar().then();
+        setNavBar().then()
+        registerBackgroundTask().then()
 
     }, []);
 

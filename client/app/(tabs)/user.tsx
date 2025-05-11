@@ -5,6 +5,7 @@ import {SafeAreaView} from "react-native-safe-area-context";
 import {useEntries} from "@/context/EntriesContext";
 import {usePopup} from "@/context/PopupContext";
 import {logoutWithOptionalSync, syncFromCloud, syncToCloud} from "@/lib/cloudSync";
+import {testBackgroundTask} from "@/utils/backgroundSync";
 
 export default function User() {
     const { user, logout } = useAuth();
@@ -115,6 +116,9 @@ export default function User() {
             )}
             <Pressable className="p-4 border-b border-cgray/30" onPress={handleClearStorage}>
                 <Text className="text-quinary">Clear all local data</Text>
+            </Pressable>
+            <Pressable className="p-4 border-b border-cgray/30" onPress={testBackgroundTask}>
+                <Text className="text-quinary">Test</Text>
             </Pressable>
         </SafeAreaView>
     );

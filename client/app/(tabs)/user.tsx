@@ -117,9 +117,6 @@ export default function User() {
             <Pressable className="p-4 border-b border-cgray/30" onPress={handleClearStorage}>
                 <Text className="text-quinary">Clear all local data</Text>
             </Pressable>
-            <Pressable className="p-4 border-b border-cgray/30" onPress={testBackgroundTask}>
-                <Text className="text-quinary">Test</Text>
-            </Pressable>
         </SafeAreaView>
     );
 }

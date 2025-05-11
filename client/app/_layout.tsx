@@ -8,7 +8,6 @@ import {EntriesProvider} from "@/context/EntriesContext";
 import {AuthProvider} from "@/context/AuthContext";
 import * as SystemUI from 'expo-system-ui';
 import {PopupProvider} from "@/context/PopupContext";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import {registerBackgroundTask} from "@/utils/backgroundSync";
 
 SystemUI.setBackgroundColorAsync(COLORS.primary).catch(() => {
@@ -31,7 +30,6 @@ export default function RootLayout() {
         //     }
         // };
         // clearAllStorage().then();
-
 
         const setNavBar = async () => {
             try {

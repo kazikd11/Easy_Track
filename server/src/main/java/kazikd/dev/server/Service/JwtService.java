@@ -71,11 +71,7 @@ public class JwtService {
 
     public boolean validateToken(String token, UserDetails userDetails) {
         final String username = extractUserEmail(token);
-        return (username.equals(userDetails.getUsername()) && !extractExpiration(token).before(new Date()));
-    }
-
-    private Date extractExpiration(String token) {
-        return extractClaim(token, Claims::getExpiration);
+        return (username.equals(userDetails.getUsername()));
     }
 
     public GoogleIdToken.Payload verifyGoogleToken(String token) {

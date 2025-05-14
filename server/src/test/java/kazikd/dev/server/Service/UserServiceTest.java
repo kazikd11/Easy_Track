@@ -38,11 +38,11 @@ class UserServiceTest {
     @Mock
     private JwtService jwtService;
 
-    @InjectMocks
-    private UserService userService;
-
     @Mock
     private GoogleIdToken.Payload payload;
+
+    @InjectMocks
+    private UserService userService;
 
     private final String dummyEmail = "email@email.com";
     private final String dummyPassword = "password";
@@ -50,7 +50,6 @@ class UserServiceTest {
     private final String refreshToken = "refresh-token";
     private final String jwtToken = "jwt-token";
     private final String googleToken = "google-token";
-    private final long refreshExpiry = 1000000L;
     private final RefreshEntity tokens = new RefreshEntity(jwtToken, refreshToken);
 
     @Test
@@ -80,6 +79,7 @@ class UserServiceTest {
     void loginUser_successful() {
         when(userRepo.findByEmail(dummyEmail)).thenReturn(dummyUser);
         when(jwtService.generateRefreshToken()).thenReturn(refreshToken);
+        long refreshExpiry = 1000000L;
         when(jwtService.getRefreshExpirationTime()).thenReturn(refreshExpiry);
         when(jwtService.generateToken(dummyEmail)).thenReturn(jwtToken);
 

@@ -35,6 +35,14 @@ public class JwtService {
     @Value("${jwt.refresh.expiration}")
     private long refreshExpirationTime;
 
+    private final GoogleIdTokenVerifier googleIdTokenVerifier;
+
+    public JwtService() {
+        this.googleIdTokenVerifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new GsonFactory())
+                .setAudience(Collections.singletonList(googleClientId))
+                .build();
+    }
+
     public String generateToken(String username) {
         Map<String, Object> claims = new HashMap<>();
 
@@ -75,11 +83,8 @@ public class JwtService {
     }
 
     public GoogleIdToken.Payload verifyGoogleToken(String token) {
-        GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new GsonFactory())
-                .setAudience(Collections.singletonList(googleClientId))
-                .build();
         try {
-            GoogleIdToken idToken = verifier.verify(token);
+            GoogleIdToken idToken = googleIdTokenVerifier.verify(token);
             if (idToken != null) {
                 return idToken.getPayload();
             }

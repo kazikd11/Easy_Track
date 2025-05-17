@@ -1,4 +1,4 @@
-package kazikd.dev.server.unit;
+package kazikd.dev.server.Unit;
 
 import kazikd.dev.server.Model.User;
 import kazikd.dev.server.Repository.UserRepo;

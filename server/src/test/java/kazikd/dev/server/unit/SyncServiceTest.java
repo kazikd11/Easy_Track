@@ -39,7 +39,7 @@ class SyncServiceTest {
     }
 
     @Test
-    void syncToCloud_allTransactions() {
+    void syncToCloud_whenAllTransactions_shouldSaveAndDeleteCorrectly() {
         List<WeightEntryDTO> incoming = List.of(
                 new WeightEntryDTO(LocalDate.of(2025, 1, 1), 70.0),
                 new WeightEntryDTO(LocalDate.of(2025, 1, 2), 72.0)
@@ -58,7 +58,7 @@ class SyncServiceTest {
     }
 
     @Test
-    void syncToCloud_noChanges() {
+    void syncToCloud_whenNoChanges_shouldNotSaveOrDelete() {
         List<WeightEntryDTO> input = List.of(
                 new WeightEntryDTO(LocalDate.of(2025, 1, 1), 70.0),
                 new WeightEntryDTO(LocalDate.of(2025, 1, 2), 71.0)
@@ -78,7 +78,7 @@ class SyncServiceTest {
     }
 
     @Test
-    void syncToCloud_emptyList() {
+    void syncToCloud_whenEmptyList_shouldDeleteAllExistingEntries() {
         List<WeightEntry> existing = List.of(
                 new WeightEntry(LocalDate.of(2025, 1, 1), 70.0, dummyUser),
                 new WeightEntry(LocalDate.of(2025, 1, 2), 71.0, dummyUser)
@@ -94,12 +94,12 @@ class SyncServiceTest {
     }
 
     @Test
-    void syncToCloud_null() {
+    void syncToCloud_whenNullInput_shouldThrowNullPointerException() {
         assertThrows(NullPointerException.class, () -> syncService.syncToCloud(null));
     }
 
     @Test
-    void syncFromCloud() {
+    void syncFromCloud_whenCalled_shouldReturnAllUserEntries() {
         List<WeightEntry> existing = List.of(
                 new WeightEntry(LocalDate.of(2025, 1, 1), 70.0, dummyUser),
                 new WeightEntry(LocalDate.of(2025, 1, 2), 71.0, dummyUser)
@@ -117,7 +117,7 @@ class SyncServiceTest {
     }
 
     @Test
-    void deleteAllUserEntries() {
+    void deleteAllUserEntries_whenCalled_shouldDeleteAllEntriesForUser() {
         syncService.deleteAllUserEntries();
         verify(syncRepo).deleteByUser(dummyUser);
     }

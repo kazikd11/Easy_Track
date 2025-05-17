@@ -51,40 +51,40 @@ class JwtServiceTest {
     }
 
     @Test
-    void generateToken() {
+    void generateToken_withValidEmail_shouldReturnToken() {
         String token = jwtService.generateToken(dummyEmail);
         assertNotNull(token);
         assertTrue(token.startsWith("eyJ"));
     }
 
     @Test
-    void validateToken_success() {
+    void validateToken_withValidTokenAndMatchingUser_shouldReturnTrue() {
         String token = jwtService.generateToken(dummyEmail);
         assertTrue(jwtService.validateToken(token, dummyUserDetails));
     }
 
     @Test
-    void validateToken_invalidToken() {
+    void validateToken_withInvalidTokenFormat_shouldThrowSignatureException() {
         String token = jwtService.generateToken(dummyEmail);
         assertThrows(SignatureException.class, () -> jwtService.validateToken(token + "invalid", dummyUserDetails));
     }
 
     @Test
-    void validateToken_invalidUser() {
+    void validateToken_withMismatchedUser_shouldReturnFalse() {
         String token = jwtService.generateToken(dummyEmail);
         UserDetails invalidUserDetails = new UserPrincipal(new User("invalidEmail", "password"));
         assertFalse(jwtService.validateToken(token, invalidUserDetails));
     }
 
     @Test
-    void validateToken_expiredToken() {
+    void validateToken_withExpiredToken_shouldThrowExpiredJwtException() {
         ReflectionTestUtils.setField(jwtService, "expirationTime", -1L);
         String token = jwtService.generateToken(dummyEmail);
         assertThrows(ExpiredJwtException.class, () -> jwtService.validateToken(token, dummyUserDetails));
     }
 
     @Test
-    void verifyGoogleToken_WithValidToken_ShouldReturnPayload() throws Exception {
+    void verifyGoogleToken_withValidToken_shouldReturnPayload() throws Exception {
         GoogleIdToken.Payload payload = new GoogleIdToken.Payload();
         payload.setEmail(dummyEmail);
 
@@ -98,14 +98,14 @@ class JwtServiceTest {
     }
 
     @Test
-    void verifyGoogleToken_invalidToken() throws Exception {
+    void verifyGoogleToken_withNullFromVerifier_shouldReturnNull() throws Exception {
         when(dummyVerifier.verify(dummyGoogleToken)).thenReturn(null);
 
         assertNull(jwtService.verifyGoogleToken(dummyGoogleToken));
     }
 
     @Test
-    void verifyGoogleToken_verificationFail() throws Exception {
+    void verifyGoogleToken_whenVerifierThrowsException_shouldThrowInvalidGoogleTokenException() throws Exception {
         when(dummyVerifier.verify(dummyGoogleToken)).thenThrow(new RuntimeException(""));
 
         assertThrows(InvalidGoogleTokenException.class, () ->

@@ -28,7 +28,7 @@ class MyUserDetailsServiceTest {
     private final User dummyUser = new User(dummyEmail, "password");
 
     @Test
-    void loadUserByUsername_found() {
+    void loadUserByUsername_whenUserExists_shouldReturnUserDetails() {
         when(userRepo.findByEmail(dummyEmail)).thenReturn(dummyUser);
         UserDetails result = myUserDetailsService.loadUserByUsername(dummyEmail);
         assertNotNull(result);
@@ -38,7 +38,7 @@ class MyUserDetailsServiceTest {
     }
 
     @Test
-    void loadUserByUsername_notFound() {
+    void loadUserByUsername_whenUserNotFound_shouldThrowUsernameNotFoundException() {
         when(userRepo.findByEmail(dummyEmail)).thenReturn(null);
         assertThrows(UsernameNotFoundException.class, () ->
                 myUserDetailsService.loadUserByUsername(dummyEmail)

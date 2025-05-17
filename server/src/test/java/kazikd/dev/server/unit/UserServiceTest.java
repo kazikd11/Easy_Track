@@ -55,14 +55,14 @@ class UserServiceTest {
     private final RefreshEntity tokens = new RefreshEntity(jwtToken, refreshToken);
 
     @Test
-    void registerUser_validData() {
+    void registerUser_withValidData_shouldRegisterSuccessfully() {
         String result = userService.registerUser(dummyUser);
         assertEquals("User registered successfully", result);
         verify(userRepo).save(dummyUser);
     }
 
     @Test
-    void registerUser_invalidEmail() {
+    void registerUser_withInvalidEmail_shouldThrowInvalidUserDataException() {
         User invalidEmailUser = new User("invalidEmail", "password");
         Exception e = assertThrows(InvalidUserDataException.class, () -> userService.registerUser(invalidEmailUser));
         assertEquals("Invalid email format", e.getMessage());
@@ -70,7 +70,7 @@ class UserServiceTest {
     }
 
     @Test
-    void registerUser_invalidPassword(){
+    void registerUser_withInvalidPassword_shouldThrowInvalidUserDataException(){
         User invalidPasswordUser = new User(dummyEmail,"pass");
         Exception e = assertThrows(InvalidUserDataException.class, () -> userService.registerUser(invalidPasswordUser));
         assertEquals("Password must be at least 8 characters long", e.getMessage());
@@ -78,7 +78,7 @@ class UserServiceTest {
     }
 
     @Test
-    void loginUser_successful() {
+    void loginUser_withCredentialsCorrect_shouldReturnTokens() {
         when(userRepo.findByEmail(dummyEmail)).thenReturn(dummyUser);
         when(jwtService.generateRefreshToken()).thenReturn(refreshToken);
         long refreshExpiry = 1000000L;
@@ -100,7 +100,7 @@ class UserServiceTest {
     }
 
     @Test
-    void loginUser_fail() {
+    void loginUser_whenAuthenticationFails_shouldThrowAuthenticationException  () {
         when(authenticationManager.authenticate(any()))
                 .thenThrow(new BadCredentialsException(""));
 
@@ -117,7 +117,7 @@ class UserServiceTest {
     }
 
     @Test
-    void refreshToken_success() {
+    void refreshToken_withValid_shouldReturnNewJwtToken() {
         when(jwtService.extractUserEmail(jwtToken)).thenReturn(dummyEmail);
         User user = buildUser(refreshToken, LocalDateTime.now().plusHours(1));
         when(userRepo.findByEmail(dummyEmail)).thenReturn(user);
@@ -132,7 +132,7 @@ class UserServiceTest {
     }
 
     @Test
-    void refreshToken_invalidJwt() {
+    void refreshToken_withJwtInvalid_shouldThrowInvalidRefreshTokenException() {
         when(jwtService.extractUserEmail(jwtToken)).thenThrow(new RuntimeException(""));
 
         Exception e = assertThrows(InvalidRefreshTokenException.class,
@@ -141,7 +141,7 @@ class UserServiceTest {
     }
 
     @Test
-    void refreshToken_userNotFound() {
+    void refreshToken_withUserNotFound_shouldThrowUserNotFoundException() {
         when(jwtService.extractUserEmail(jwtToken)).thenReturn(dummyEmail);
         when(userRepo.findByEmail(dummyEmail)).thenReturn(null);
 
@@ -151,7 +151,7 @@ class UserServiceTest {
     }
 
     @Test
-    void refreshToken_expired() {
+    void refreshToken_withRefreshTokenExpired_shouldThrowInvalidRefreshTokenException() {
         when(jwtService.extractUserEmail(jwtToken)).thenReturn(dummyEmail);
         User user = buildUser(refreshToken, LocalDateTime.now().minusHours(1));
         when(userRepo.findByEmail(dummyEmail)).thenReturn(user);
@@ -162,7 +162,7 @@ class UserServiceTest {
     }
 
     @Test
-    void refreshToken_invalidRefreshToken() {
+    void refreshToken_withRefreshTokenInvalid_shouldThrowInvalidRefreshTokenException() {
         when(jwtService.extractUserEmail(jwtToken)).thenReturn(dummyEmail);
         User user = buildUser("invalid-refresh-token", LocalDateTime.now().plusHours(1));
         when(userRepo.findByEmail(dummyEmail)).thenReturn(user);
@@ -180,7 +180,7 @@ class UserServiceTest {
     }
 
     @Test
-    void googleLogin_existingUser() {
+    void googleLogin_withUserExists_shouldUpdateAndReturnTokens() {
         setupGoogleMocks();
         when(jwtService.verifyGoogleToken(googleToken)).thenReturn(payload);
         User user = new User(dummyEmail, dummyPassword);
@@ -197,7 +197,7 @@ class UserServiceTest {
     }
 
     @Test
-    void googleLogin_newUser() {
+    void googleLogin_withNewUser_shouldCreateUserAndReturnTokens() {
         setupGoogleMocks();
         when(jwtService.verifyGoogleToken(googleToken)).thenReturn(payload);
         when(userRepo.findByEmail(dummyEmail)).thenReturn(null);
@@ -218,7 +218,7 @@ class UserServiceTest {
     }
 
     @Test
-    void googleLogin_invalidToken() {
+    void googleLogin_withTokenInvalid_shouldThrowInvalidGoogleTokenException() {
         when(jwtService.verifyGoogleToken("invalid-token")).thenReturn(null);
 
         Exception e = assertThrows(InvalidGoogleTokenException.class,
@@ -229,7 +229,7 @@ class UserServiceTest {
     }
 
     @Test
-    void logout() {
+    void logout_whenCalled_shouldClearTokensAndLogout  () {
         when(userRepo.findByEmail(dummyEmail)).thenReturn(dummyUser);
 
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(dummyEmail, dummyPassword));

@@ -1,9 +1,11 @@
-package kazikd.dev.server.Service;
+package kazikd.dev.server.unit;
 
 import kazikd.dev.server.Model.User;
 import kazikd.dev.server.Model.WeightEntry;
 import kazikd.dev.server.Model.WeightEntryDTO;
 import kazikd.dev.server.Repository.SyncRepo;
+import kazikd.dev.server.Service.SyncService;
+import kazikd.dev.server.Service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

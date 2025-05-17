@@ -1,7 +1,8 @@
-package kazikd.dev.server.Service;
+package kazikd.dev.server.unit;
 
 import kazikd.dev.server.Model.User;
 import kazikd.dev.server.Repository.UserRepo;
+import kazikd.dev.server.Service.MyUserDetailsService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

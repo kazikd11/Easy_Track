@@ -1,4 +1,4 @@
-package kazikd.dev.server.Service;
+package kazikd.dev.server.unit;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
@@ -7,6 +7,7 @@ import io.jsonwebtoken.security.SignatureException;
 import kazikd.dev.server.ControllerException.InvalidGoogleTokenException;
 import kazikd.dev.server.Model.User;
 import kazikd.dev.server.Model.UserPrincipal;
+import kazikd.dev.server.Service.JwtService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

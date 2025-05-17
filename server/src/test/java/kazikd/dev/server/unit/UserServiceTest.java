@@ -1,4 +1,4 @@
-package kazikd.dev.server.Service;
+package kazikd.dev.server.unit;
 
 import kazikd.dev.server.ControllerException.InvalidGoogleTokenException;
 import kazikd.dev.server.ControllerException.InvalidRefreshTokenException;
@@ -7,6 +7,8 @@ import kazikd.dev.server.ControllerException.UserNotFoundException;
 import kazikd.dev.server.Model.RefreshEntity;
 import kazikd.dev.server.Model.User;
 import kazikd.dev.server.Repository.UserRepo;
+import kazikd.dev.server.Service.JwtService;
+import kazikd.dev.server.Service.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;

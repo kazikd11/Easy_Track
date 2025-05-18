@@ -62,11 +62,11 @@ class UserControllerAuthIT {
                 .andExpect(jsonPath("$.message").value(expectedMessage));
     }
 
-    private <T> void performPostGetTokens(String url, T body, int expectedStatus) throws Exception {
+    private <T> void performPostGetTokens(String url, T body) throws Exception {
         mockMvc.perform(post(url)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(body)))
-                .andExpect(status().is(expectedStatus))
+                .andExpect(status().is(200))
                 .andExpect(jsonPath("$.jwtToken").exists())
                 .andExpect(jsonPath("$.refreshToken").exists());
     }
@@ -116,12 +116,7 @@ class UserControllerAuthIT {
         User user = new User(dummyEmail, dummyPassword);
         userRepo.save(new User(dummyEmail, dummyEncryptedPassword));
 
-        mockMvc.perform(post("/auth/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(user)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.jwtToken").exists())
-                .andExpect(jsonPath("$.refreshToken").exists());
+        performPostGetTokens("/auth/login", user);
 
         assertNotNull(userRepo.findByEmail(dummyEmail).getRefreshToken());
     }
@@ -156,7 +151,7 @@ class UserControllerAuthIT {
     void google_withNewUser_shouldCreateUserAndReturnTokens() throws Exception {
         mockGoogleVerifier();
 
-        performPostGetTokens("/auth/google", new GoogleAuthToken("google-token"), 200);
+        performPostGetTokens("/auth/google", new GoogleAuthToken("google-token"));
 
         List<User> users = userRepo.findAll();
         assertEquals(1, users.size());
@@ -169,7 +164,7 @@ class UserControllerAuthIT {
 
         mockGoogleVerifier();
 
-        performPostGetTokens("/auth/google", new GoogleAuthToken("google-token"), 200);
+        performPostGetTokens("/auth/google", new GoogleAuthToken("google-token"));
 
         List<User> users = userRepo.findAll();
         assertEquals(1, users.size());

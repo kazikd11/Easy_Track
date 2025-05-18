@@ -1,6 +1,7 @@
 package kazikd.dev.server.Service;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import io.jsonwebtoken.ExpiredJwtException;
 import kazikd.dev.server.ControllerException.InvalidGoogleTokenException;
 import kazikd.dev.server.ControllerException.InvalidRefreshTokenException;
 import kazikd.dev.server.ControllerException.InvalidUserDataException;
@@ -99,7 +100,14 @@ public class UserService {
         String refreshToken = tokens.refreshToken();
         String jwtToken = tokens.jwtToken();
 
-        String email = jwtService.extractUserEmail(jwtToken);
+        String email;
+
+        try {
+            email = jwtService.extractUserEmail(jwtToken);
+        }
+        catch (ExpiredJwtException e) {
+            email = e.getClaims().getSubject();
+        }
 
         User user = userRepo.findByEmail(email);
         if (user == null) {

@@ -12,19 +12,18 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 
+import static kazikd.dev.server.Helpers.PerformHelpers.performPostCheckMessage;
+import static kazikd.dev.server.Helpers.PerformHelpers.performPostCheckTokens;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -54,28 +53,11 @@ class UserControllerAuthIT {
         userRepo.deleteAll();
     }
 
-    private <T> void performPostGetMessage(String url, T body, int expectedStatus, String expectedMessage) throws Exception {
-        mockMvc.perform(post(url)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(body)))
-                .andExpect(status().is(expectedStatus))
-                .andExpect(jsonPath("$.message").value(expectedMessage));
-    }
-
-    private <T> void performPostGetTokens(String url, T body) throws Exception {
-        mockMvc.perform(post(url)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(body)))
-                .andExpect(status().is(200))
-                .andExpect(jsonPath("$.jwtToken").exists())
-                .andExpect(jsonPath("$.refreshToken").exists());
-    }
-
     @Test
     void registerUser_withValidData_shouldReturn201() throws Exception {
         User user = new User(dummyEmail, dummyPassword);
 
-        performPostGetMessage("/auth/register", user, 201, "User registered successfully");
+        performPostCheckMessage(mockMvc, objectMapper, "/auth/register", user, 201, "User registered successfully");
 
         List<User> users = userRepo.findAll();
         assertEquals(1, users.size());
@@ -89,14 +71,14 @@ class UserControllerAuthIT {
     @Test
     void registerUser_withInvalidEmail_shouldReturn400() throws Exception {
         User user = new User("email", dummyPassword);
-        performPostGetMessage("/auth/register", user, 400, "Invalid email format");
+        performPostCheckMessage(mockMvc, objectMapper,"/auth/register", user, 400, "Invalid email format");
         assertEquals(0, userRepo.count());
     }
 
     @Test
     void registerUser_withInvalidPassword_shouldReturn400() throws Exception {
         User user = new User(dummyEmail, "pass");
-        performPostGetMessage("/auth/register", user, 400, "Password must be at least 8 characters long");
+        performPostCheckMessage(mockMvc, objectMapper,"/auth/register", user, 400, "Password must be at least 8 characters long");
         assertEquals(0, userRepo.count());
     }
 
@@ -107,7 +89,7 @@ class UserControllerAuthIT {
 
         User duplicate = new User(dummyEmail, dummyPassword);
 
-        performPostGetMessage("/auth/register", duplicate, 400, "User already exists");
+        performPostCheckMessage(mockMvc, objectMapper,"/auth/register", duplicate, 400, "User already exists");
         assertEquals(1, userRepo.count());
     }
 
@@ -116,9 +98,10 @@ class UserControllerAuthIT {
         User user = new User(dummyEmail, dummyPassword);
         userRepo.save(new User(dummyEmail, dummyEncryptedPassword));
 
-        performPostGetTokens("/auth/login", user);
+        performPostCheckTokens(mockMvc, objectMapper,"/auth/login", user);
 
         assertNotNull(userRepo.findByEmail(dummyEmail).getRefreshToken());
+        assertNotNull(userRepo.findByEmail(dummyEmail).getRefreshTokenExpiry());
     }
 
     @Test
@@ -127,14 +110,14 @@ class UserControllerAuthIT {
 
         User user = new User(dummyEmail, "wrongPassword");
 
-        performPostGetMessage("/auth/login", user, 401, "Invalid credentials");
+        performPostCheckMessage(mockMvc, objectMapper,"/auth/login", user, 401, "Invalid credentials");
     }
 
     @Test
     void loginUser_withNonExistingEmail_shouldReturn401() throws Exception {
         User user = new User(dummyEmail, dummyPassword);
 
-        performPostGetMessage("/auth/login", user, 401, "Invalid credentials");
+        performPostCheckMessage(mockMvc, objectMapper,"/auth/login", user, 401, "Invalid credentials");
     }
 
     private void mockGoogleVerifier() throws Exception {
@@ -151,7 +134,7 @@ class UserControllerAuthIT {
     void google_withNewUser_shouldCreateUserAndReturnTokens() throws Exception {
         mockGoogleVerifier();
 
-        performPostGetTokens("/auth/google", new GoogleAuthToken("google-token"));
+        performPostCheckTokens(mockMvc, objectMapper,"/auth/google", new GoogleAuthToken("google-token"));
 
         List<User> users = userRepo.findAll();
         assertEquals(1, users.size());
@@ -164,7 +147,7 @@ class UserControllerAuthIT {
 
         mockGoogleVerifier();
 
-        performPostGetTokens("/auth/google", new GoogleAuthToken("google-token"));
+        performPostCheckTokens(mockMvc, objectMapper,"/auth/google", new GoogleAuthToken("google-token"));
 
         List<User> users = userRepo.findAll();
         assertEquals(1, users.size());
@@ -177,7 +160,7 @@ class UserControllerAuthIT {
         ReflectionTestUtils.setField(jwtService, "googleIdTokenVerifier", verifier);
         when(verifier.verify("google-token")).thenReturn(null);
 
-        performPostGetMessage("/auth/google", new GoogleAuthToken("google-token"), 401, "Invalid Google token");
+        performPostCheckMessage(mockMvc, objectMapper,"/auth/google", new GoogleAuthToken("google-token"), 401, "Invalid Google token");
 
         assertEquals(0, userRepo.count());
     }
@@ -188,7 +171,7 @@ class UserControllerAuthIT {
         ReflectionTestUtils.setField(jwtService, "googleIdTokenVerifier", verifier);
         when(verifier.verify("google-token")).thenThrow(new RuntimeException(""));
 
-        performPostGetMessage("/auth/google", new GoogleAuthToken("google-token"), 401, "Failed to verify Google token");
+        performPostCheckMessage(mockMvc, objectMapper,"/auth/google", new GoogleAuthToken("google-token"), 401, "Failed to verify Google token");
 
         assertEquals(0, userRepo.count());
     }

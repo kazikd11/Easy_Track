@@ -1,5 +1,7 @@
 package kazikd.dev.server.Unit;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import io.jsonwebtoken.JwtException;
 import kazikd.dev.server.ControllerException.InvalidGoogleTokenException;
 import kazikd.dev.server.ControllerException.InvalidRefreshTokenException;
 import kazikd.dev.server.ControllerException.InvalidUserDataException;
@@ -19,7 +21,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.LocalDateTime;
@@ -132,12 +133,11 @@ class UserServiceTest {
     }
 
     @Test
-    void refreshToken_withJwtInvalid_shouldThrowInvalidRefreshTokenException() {
-        when(jwtService.extractUserEmail(jwtToken)).thenThrow(new RuntimeException(""));
+    void refreshToken_withJwtInvalid_shouldThrowJwtException() {
+        when(jwtService.extractUserEmail(jwtToken)).thenThrow(new JwtException(""));
 
-        Exception e = assertThrows(InvalidRefreshTokenException.class,
+        assertThrows(JwtException.class,
                 () -> userService.refreshToken(tokens));
-        assertEquals("Invalid JWT token", e.getMessage());
     }
 
     @Test

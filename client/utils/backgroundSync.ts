@@ -35,8 +35,7 @@ async function refreshToken(user: string | null) {
         const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/auth/refresh`, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${user}`
+                "Content-Type": "application/json"
             },
             body: JSON.stringify({
                 jwtToken: user,

@@ -99,12 +99,7 @@ public class UserService {
         String refreshToken = tokens.refreshToken();
         String jwtToken = tokens.jwtToken();
 
-        String email;
-        try {
-            email = jwtService.extractUserEmail(jwtToken);
-        } catch (Exception e) {
-            throw new InvalidRefreshTokenException("Invalid JWT token");
-        }
+        String email = jwtService.extractUserEmail(jwtToken);
 
         User user = userRepo.findByEmail(email);
         if (user == null) {

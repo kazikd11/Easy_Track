@@ -9,9 +9,13 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RestControllerAdvice
 public class ControllerException{
+
+    private static final Logger logger = LoggerFactory.getLogger(ControllerException.class);
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<MessageResponse> handleDataIntegrityViolationException(DataIntegrityViolationException e) {
@@ -50,6 +54,7 @@ public class ControllerException{
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<MessageResponse> handleGeneralException(Exception e) {
+        logger.error("Unexpected exception!", e);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new MessageResponse("An unexpected error occurred"));
     }
 }

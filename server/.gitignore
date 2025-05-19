@@ -34,3 +34,5 @@ build/
 
 application.properties
 application-test.properties
+
+server.log

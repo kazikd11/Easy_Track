@@ -20,6 +20,16 @@ public class PerformHelpers {
                 .andExpect(jsonPath("$.message").value(expectedMessage));
     }
 
+    public static <T> void performPostWithAuthHeaderCheckMessage(MockMvc mockMvc, ObjectMapper objectMapper,
+                                                   String url, String jwt, T body, int expectedStatus, String expectedMessage) throws Exception {
+        mockMvc.perform(post(url)
+                        .header("Authorization", "Bearer " + jwt)
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(body)))
+                .andExpect(status().is(expectedStatus))
+                .andExpect(jsonPath("$.message").value(expectedMessage));
+    }
+
     public static <T> void performPostCheckJwt(MockMvc mockMvc, ObjectMapper objectMapper,
                                                String url, T body, String oldJwt) throws Exception {
         mockMvc.perform(post(url)

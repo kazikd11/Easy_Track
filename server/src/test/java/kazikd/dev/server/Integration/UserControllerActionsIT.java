@@ -20,11 +20,13 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static kazikd.dev.server.Helpers.PerformHelpers.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -72,17 +74,10 @@ public class UserControllerActionsIT {
         return objectMapper.readValue(response, RefreshEntity.class);
     }
 
-    // no endpoint login - generates jwt token, does not save refresh token in db
-    private String registerGetJwt() {
-        userRepo.save(new User(dummyEmail, dummyEncryptedPassword));
-        return jwtService.generateToken(dummyEmail);
-    }
-
-
     @Test
     void deleteUser_whenCalled_shouldRemoveUserAndEntries() throws Exception {
-        String jwt = registerGetJwt();
-        User user = userRepo.findByEmail(dummyEmail);
+        User user = userRepo.save(new User(dummyEmail, dummyEncryptedPassword));
+        String jwt =  jwtService.generateToken(dummyEmail);
         WeightEntry entry = new WeightEntry(LocalDate.now(), 80.0, user);
         syncRepo.save(entry);
 
@@ -93,6 +88,31 @@ public class UserControllerActionsIT {
         assertFalse(userRepo.existsById(user.getId()));
         assertEquals(0, syncRepo.count());
     }
+
+    @Test
+    void deleteUser_whenMoreUsers_shouldNotDeleteOtherUsersData() throws Exception {
+        User userA = userRepo.save(new User(dummyEmail, dummyEncryptedPassword));
+        String jwtA = jwtService.generateToken(dummyEmail);
+        WeightEntry entryA = new WeightEntry(LocalDate.now(), 80.0, userA);
+        syncRepo.save(entryA);
+
+        String emailB = "other@email.com";
+        User userB = userRepo.save(new User(emailB, dummyEncryptedPassword));
+        WeightEntry entryB = new WeightEntry(LocalDate.now(), 80.0, userB);
+        syncRepo.save(entryB);
+
+        assertEquals(2, syncRepo.count());
+
+        performDeleteCheckMessage(mockMvc,"/auth/delete", jwtA, "User deleted successfully");
+
+        assertFalse(userRepo.existsById(userA.getId()));
+        assertTrue(userRepo.existsById(userB.getId()));
+
+        assertEquals(1, syncRepo.count());
+        List<WeightEntry> savedEntries = syncRepo.findByUser(userB);
+        assertEquals(1, savedEntries.size());
+    }
+
 
     @Test
     void logout_shouldClearRefreshTokenAndReturn200() throws Exception {

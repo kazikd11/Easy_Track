@@ -14,7 +14,6 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -54,8 +53,6 @@ public class SyncControllerIT {
 
     @Autowired
     private JwtService jwtService;
-
-    private final BCryptPasswordEncoder passEncryptor = new BCryptPasswordEncoder(12);
 
     private final String dummyEmail = "email@email.com";
     private final String dummyPassword = "password";

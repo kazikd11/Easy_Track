@@ -1,24 +1,31 @@
 import * as WebBrowser from 'expo-web-browser';
 import * as Google from 'expo-auth-session/providers/google';
 import {useEffect} from 'react';
-import {Button} from 'react-native';
+import {Text, Pressable} from 'react-native';
 import {router} from "expo-router";
 import {useAuth} from "@/context/AuthContext";
 import {usePopup} from "@/context/PopupContext";
+import { makeRedirectUri } from 'expo-auth-session';
+
 
 WebBrowser.maybeCompleteAuthSession();
 
 export default function GoogleAuth() {
+
+    const redirectUri = makeRedirectUri({
+        native: 'com.kazikd11.easytrack://redirect'
+    });
 
     const apiUrl = process.env.EXPO_PUBLIC_API_URL;
     const googleClientId = process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID;
     const {login} = useAuth();
     const {showMessage} = usePopup();
     const [request, response, promptAsync] = Google.useAuthRequest({
-        redirectUri: 'https://auth.expo.io/@kazikd11/Easy_Track/',
+        redirectUri,
         clientId: googleClientId,
         scopes: ['openid', 'profile', 'email'],
     });
+
     useEffect(() => {
         const handleResponse = async () => {
             if (response?.type === 'success') {
@@ -51,9 +58,14 @@ export default function GoogleAuth() {
     }, [response]);
 
     return (
-        <Button
-            title="Login with Google"
-            onPress={() => promptAsync()}
-        />
+        <Pressable
+            className="p-4 border-b border-cgray/30"
+            onPress={() => {
+                promptAsync();
+                showMessage({ text: "Experimental feature, may not work yet", type: "info" });
+            }}
+        >
+            <Text className="color-cgray">Login with Google</Text>
+        </Pressable>
     );
 }

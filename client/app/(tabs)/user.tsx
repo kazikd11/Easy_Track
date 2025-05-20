@@ -6,6 +6,7 @@ import {useEntries} from "@/context/EntriesContext";
 import {usePopup} from "@/context/PopupContext";
 import {logoutWithOptionalSync, syncFromCloud, syncToCloud} from "@/lib/cloudSync";
 import {testBackgroundTask} from "@/utils/backgroundSync";
+import GoogleAuth from "@/components/GoogleAuth";
 
 export default function User() {
     const { user, logout } = useAuth();
@@ -94,6 +95,7 @@ export default function User() {
                     <Pressable className="p-4 border-b border-cgray/30" onPress={() => router.navigate('/account/register')}>
                         <Text className="text-cwhite">Register</Text>
                     </Pressable>
+                    <GoogleAuth/>
                 </>
             ) : (
                 <>

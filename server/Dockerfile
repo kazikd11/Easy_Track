@@ -1,10 +1,14 @@
-FROM maven:3.9.4-eclipse-temurin-21 AS builder
+FROM eclipse-temurin:21-jdk AS builder
 WORKDIR /app
-COPY . .
-RUN mvn clean package
 
-FROM openjdk:21-jdk-slim
-VOLUME /tmp
-ARG JAR_FILE=target/*.jar
-COPY ${JAR_FILE} app.jar
-ENTRYPOINT ["java","-jar","/app.jar"]
+COPY .mvn .mvn
+COPY mvnw .
+COPY pom.xml .
+COPY src src
+
+RUN ./mvnw clean package -DskipTests
+
+FROM eclipse-temurin:21-jdk
+WORKDIR /app
+COPY --from=builder /app/target/*.jar app.jar
+ENTRYPOINT ["java", "-jar", "app.jar"]

@@ -61,8 +61,7 @@ export default function GoogleAuth() {
         <Pressable
             className="p-4 border-b border-cgray/30"
             onPress={() => {
-                promptAsync();
-                showMessage({ text: "Experimental feature, may not work yet", type: "info" });
+                showMessage({ text: "Feature disabled right now", type: "info" });
             }}
         >
             <Text className="color-cgray">Login with Google</Text>

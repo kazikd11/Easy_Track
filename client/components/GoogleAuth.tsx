@@ -24,7 +24,7 @@ export default function GoogleAuth() {
     const [request, response, promptAsync] = Google.useAuthRequest({
         redirectUri,
         androidClientId: androidClientId,
-        clientId: webClientId,
+        // clientId: webClientId,
         scopes: ['openid', 'profile', 'email'],
     });
 

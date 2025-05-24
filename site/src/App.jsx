@@ -19,6 +19,13 @@ export default function App() {
         return () => clearInterval(interval);
     }, [current]);
 
+    useEffect(() => {
+        images.forEach((src) => {
+            const img = new Image();
+            img.src = src;
+        });
+    }, []);
+
     const handleDotClick = (i) => {
         setCurrent(i);
     };
@@ -27,7 +34,7 @@ export default function App() {
         <div className="min-h-screen flex items-center justify-center bg-primary text-cwhite px-4">
             <div className="max-w-6xl w-full grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                 <div className="w-full hidden md:block">
-                    <div className="relative w-full h-[450px] rounded-2xl shadow-lg overflow-hidden">
+                    <div className="relative w-full h-[700px] rounded-2xl shadow-lg overflow-hidden">
                         <AnimatePresence mode="wait">
                             <motion.img
                                 key={current}
@@ -45,7 +52,7 @@ export default function App() {
                         {images.map((_, i) => (
                             <button
                                 key={i}
-                                className={`w-2 h-2 rounded-full transition-all border-2 border-cwhite ${
+                                className={`w-3 h-3 rounded-full transition-all border-2 border-cwhite ${
                                     current === i ? "bg-cwhite" : "bg-primary"
                                 }`}
                                 onClick={() => handleDotClick(i)}
@@ -56,19 +63,19 @@ export default function App() {
 
                 <div className="text-center md:text-left">
                     <div className="flex items-center justify-center md:justify-start flex-row md:items-start">
-                        <img src="/logo.png" alt="Easy Track Logo" className="h-10"/>
-                        <h1 className="text-4xl font-bold text-cwhite mb-1 -ml-1.5">asy Track</h1>
+                        <img src="/logo.png" alt="Easy Track Logo" className="h-[62px]"/>
+                        <h1 className="text-6xl font-bold text-cwhite mb-1 -ml-2">asy Track</h1>
                     </div>
-                    <div className="text-xl text-cgray mb-4 ml-2 italic">
+                    <div className="text-3xl text-cgray mb-4 ml-2 mt-2 italic">
                         <p>Simplest weight tracker there is.</p>
                         <p>Fully secure and private.</p>
                     </div>
-                    <a className="inline-flex items-center justify-center py-2 px-6 ml-2 rounded-xl gap-1 text-cwhite hover:bg-secondary transition duration-300 bg-tertiary"
+                    <a className="inline-flex items-center justify-center py-3 px-6 ml-2 mt-2 rounded-xl gap-1 text-cwhite hover:bg-secondary transition duration-300 bg-tertiary"
                        href="/downloads/easy_track.apk"
                        download
                     >
-                        <p>Download for</p>
-                        <img src="/Android.png" alt="Android" className="h-3 mt-0.5"
+                        <p className="text-2xl">Download for</p>
+                        <img src="/Android.png" alt="Android" className="h-5 mt-0.5 ml-1"
                         />
                     </a>
                 </div>

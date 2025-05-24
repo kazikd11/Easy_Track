@@ -17,12 +17,14 @@ export default function GoogleAuth() {
     });
 
     const apiUrl = process.env.EXPO_PUBLIC_API_URL;
-    const googleClientId = process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID;
+    const webClientId = process.env.EXPO_PUBLIC_WEB_CLIENT_ID;
+    const androidClientId = process.env.EXPO_PUBLIC_ANDROID_CLIENT_ID;
     const {login} = useAuth();
     const {showMessage} = usePopup();
     const [request, response, promptAsync] = Google.useAuthRequest({
         redirectUri,
-        clientId: googleClientId,
+        androidClientId: androidClientId,
+        clientId: webClientId,
         scopes: ['openid', 'profile', 'email'],
     });
 

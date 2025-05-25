@@ -17,9 +17,9 @@
         "buildType": "apk"
       },
       "env": {
-        "EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID": "@google_web_client_id",
-        "EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID": "@google_android_client_id",
-        "EXPO_PUBLIC_API_URL": "@api_url"
+        "EXPO_PUBLIC_API_URL": "$EXPO_PUBLIC_API_URL",
+        "EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID": "$EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID",
+        "EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID": "$EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID"
       }
     }
   },

@@ -20,7 +20,9 @@
 ###  Mobile App
 
 cd client
+
 npm install
+
 npx expo start
 
 >  You can scan the QR code with Expo Go or build the app to install `.apk` manually.
@@ -30,6 +32,7 @@ npx expo start
 Make sure Docker is installed and running.
 
 cd server
+
 docker-compose up --build
 
 > Backend will be running at http://localhost:8080.

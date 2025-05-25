@@ -28,6 +28,8 @@ export default function GoogleAuth() {
         scopes: ['openid', 'profile', 'email'],
     });
 
+    console.log("ANDROID_CLIENT_ID:", androidClientId);
+
     useEffect(() => {
         const handleResponse = async () => {
             if (response?.type === 'success') {

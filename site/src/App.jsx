@@ -71,7 +71,7 @@ export default function App() {
                         <p>Fully secure and private.</p>
                     </div>
                     <a className="inline-flex items-center justify-center py-3 px-6 ml-2 mt-2 rounded-xl gap-1 text-cwhite hover:bg-secondary transition duration-300 bg-tertiary"
-                       href="/downloads/easy_track.apk"
+                       href="https://github.com/kazikd11/Easy_Track/releases/download/apk-realese/easy_track.apk"
                        download
                     >
                         <p className="text-2xl">Download for</p>

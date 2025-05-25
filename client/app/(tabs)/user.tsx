@@ -62,7 +62,7 @@ export default function User() {
             cancelLabel: "Cancel",
             onConfirm: async () => {
                 try {
-                    const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/delete`, {
+                    const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/auth/delete`, {
                         method: "DELETE",
                         headers: {
                             "Authorization": `Bearer ${user}`,

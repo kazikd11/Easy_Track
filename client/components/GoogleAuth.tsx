@@ -1,72 +1,59 @@
 import * as WebBrowser from 'expo-web-browser';
-import * as Google from 'expo-auth-session/providers/google';
 import {useEffect} from 'react';
 import {Text, Pressable} from 'react-native';
-import {router} from "expo-router";
 import {useAuth} from "@/context/AuthContext";
 import {usePopup} from "@/context/PopupContext";
-import { makeRedirectUri } from 'expo-auth-session';
+import {GoogleSignin} from "@react-native-google-signin/google-signin";
 
 
 WebBrowser.maybeCompleteAuthSession();
 
 export default function GoogleAuth() {
 
-    const redirectUri = makeRedirectUri({
-        native: 'com.kazikd11.easytrack://redirect'
-    });
-
-    const apiUrl = process.env.EXPO_PUBLIC_API_URL;
-    const webClientId = process.env.EXPO_PUBLIC_WEB_CLIENT_ID;
-    const androidClientId = process.env.EXPO_PUBLIC_ANDROID_CLIENT_ID;
     const {login} = useAuth();
     const {showMessage} = usePopup();
-    const [request, response, promptAsync] = Google.useAuthRequest({
-        redirectUri,
-        androidClientId: androidClientId,
-        // clientId: webClientId,
-        scopes: ['openid', 'profile', 'email'],
-    });
 
-    console.log("ANDROID_CLIENT_ID:", androidClientId);
-
-    useEffect(() => {
-        const handleResponse = async () => {
-            if (response?.type === 'success') {
-                const {authentication} = response;
-                try {
-                    const response = await fetch(`http://${apiUrl}/auth/google`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({token: authentication?.accessToken}),
-                    })
-                    const data = await response.json();
-                    if (response.ok && data.jwtToken && data.refreshToken) {
-                        await login(data.jwtToken, data.refreshToken);
-                        showMessage({ text: "Login successful!", type: "info" })
-                        router.back()
-                    } else {
-                        showMessage({ text: data.message || "Unexpected error, please try again later", type: "error" });
-                    }
-                } catch (e) {
-                    showMessage({ text: "Network error, please try again later", type: "error" });
-                    console.error(e);
-                }
-
-                console.log(authentication?.accessToken);
-            }
-        }
-        handleResponse().then()
-    }, [response]);
+    // useEffect(() => {
+    //     GoogleSignin.configure({
+    //         scopes: ['email', 'profile'],
+    //         webClientId: process.env.EXPO_PUBLIC_WEB_CLIENT_ID,
+    //         offlineAccess: false,
+    //         iosClientId: '',
+    //     });
+    // }, []);
+    //
+    // const handleGoogleSignIn = async () => {
+    //     try {
+    //         await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+    //
+    //         const userInfo = await GoogleSignin.signIn();
+    //         const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/auth/google`, {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //             },
+    //             body: JSON.stringify({ token: userInfo.data?.idToken }),
+    //         });
+    //
+    //         const data = await response.json();
+    //
+    //         if (response.ok) {
+    //             await login(data.jwtToken, data.refreshToken);
+    //             showMessage({ text: "Login successful!", type: "info" });
+    //         } else {
+    //             showMessage({ text: data.message || "Login failed", type: "error" });
+    //         }
+    //     } catch (e) {
+    //         showMessage({ text: "Google Sign-In failed", type: "error" });
+    //     }
+    // }
 
     return (
         <Pressable
             className="p-4 border-b border-cgray/30"
             onPress={() => {
-                promptAsync();
-                // showMessage({ text: "Feature disabled right now", type: "info" });
+                // handleGoogleSignIn()
+                showMessage({ text: "Feature disabled right now", type: "info" });
             }}
         >
             <Text className="color-cgray">Login with Google</Text>
